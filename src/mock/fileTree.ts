@@ -1,71 +1,31 @@
-// fileTree.ts
+import { TreeViewBaseItem } from "@mui/x-tree-view/models";
 
-import { FileNode } from "../types";
-
-export const fileTree: FileNode[] = [
+export const MUI_X_PRODUCTS: TreeViewBaseItem[] = [
   {
-    id: "folder1",
-    name: "Folder 1",
-    type: "folder",
+    id: "grid",
+    label: "Data Grid",
     children: [
-      { id: "file1", name: "File 1.py", type: "file" },
-      { id: "file2", name: "File 2.json", type: "file" },
+      { id: "grid-community", label: "@mui/x-data-grid" },
+      { id: "grid-pro", label: "@mui/x-data-grid-pro" },
+      { id: "grid-premium", label: "@mui/x-data-grid-premium" },
     ],
   },
   {
-    id: "folder2",
-    name: "Folder 2",
-    type: "folder",
+    id: "pickers",
+    label: "Date and Time Pickers",
     children: [
-      { id: "file3", name: "File 3.ts", type: "file" },
-      {
-        id: "folder3",
-        name: "Subfolder",
-        type: "folder",
-        children: [{ id: "file4", name: "File 4.txt", type: "file" }],
-      },
+      { id: "pickers-community", label: "@mui/x-date-pickers" },
+      { id: "pickers-pro", label: "@mui/x-date-pickers-pro" },
     ],
   },
   {
-    id: "folder3",
-    name: "Folder 3",
-    type: "folder",
-    children: [
-      { id: "file3", name: "File 3.ts", type: "file" },
-      {
-        id: "folder3",
-        name: "Subfolder",
-        type: "folder",
-        children: [{ id: "file4", name: "File 4.txt", type: "file" }],
-      },
-    ],
+    id: "charts",
+    label: "Charts",
+    children: [{ id: "charts-community", label: "@mui/x-charts" }],
   },
   {
-    id: "folder4",
-    name: "Folder 4",
-    type: "folder",
-    children: [
-      { id: "file3", name: "File 3.ts", type: "file" },
-      {
-        id: "folder3",
-        name: "Subfolder",
-        type: "folder",
-        children: [{ id: "file4", name: "File 4.txt", type: "file" }],
-      },
-    ],
-  },
-  {
-    id: "folder5",
-    name: "Folder 5",
-    type: "folder",
-    children: [
-      { id: "file3", name: "File 3.ts", type: "file" },
-      {
-        id: "folder3",
-        name: "Subfolder",
-        type: "folder",
-        children: [{ id: "file4", name: "File 4.txt", type: "file" }],
-      },
-    ],
+    id: "tree-view",
+    label: "Tree View",
+    children: [{ id: "tree-view-community", label: "@mui/x-tree-view" }],
   },
 ];
