@@ -14,6 +14,7 @@ import { WebTableTool } from "./panels/WebTableTool";
 import { CodeServer } from "./panels/CodeServer";
 import { ExecutionControls } from "./panels/ExecutionControls";
 import { WorkflowManager } from "./panels/WorkflowManager";
+import { MainMenuBar } from "./components/common/MainMenuBar";
 
 /**
  * Components to be used in the Dockview panels.
@@ -124,7 +125,15 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ height: "100vh", width: "100vw" }}>
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <MainMenuBar />
       <DockviewReact
         className="dockview-theme-dark"
         onReady={onReady}

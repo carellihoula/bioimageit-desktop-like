@@ -1,6 +1,5 @@
 import { Button, VStack, Box, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useColorModeValue } from "@/components/ui/color-mode";
 
 const workflows = [
   "/home/carellihoula/Documents/demoworkflow/demoworkflow",
@@ -18,7 +17,6 @@ const workflows = [
  */
 export const WorkflowManager = () => {
   const [selected, setSelected] = useState<string | null>(null);
-  const selectedBg = useColorModeValue("cyan.100", "cyan.700");
 
   return (
     <VStack
@@ -53,7 +51,7 @@ export const WorkflowManager = () => {
             py={1}
             borderRadius="sm"
             cursor="pointer"
-            bg={selected === path ? selectedBg : "transparent"}
+            bg={selected === path ? "#05213d" : "transparent"}
             _hover={{ bg: "gray.700" }}
             onClick={() => setSelected(path)}
           >
