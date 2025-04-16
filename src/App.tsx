@@ -12,8 +12,15 @@ import { Properties } from "./panels/Properties";
 import Workflow from "./panels/Workflow";
 import { WebTableTool } from "./panels/WebTableTool";
 import { CodeServer } from "./panels/CodeServer";
-// import PanelTitleBar from "./components/common/PanelTitleBar";
+import { ExecutionControls } from "./panels/ExecutionControls";
+import { WorkflowManager } from "./panels/WorkflowManager";
 
+/**
+ * Components to be used in the Dockview panels.
+ * The values are the components themselves.
+ * The components are imported from their respective files.
+ * The components are used in the Dockview API to create panels.
+ */
 const components = {
   default: (props: IDockviewPanelProps) => {
     switch (props.api.id) {
@@ -27,6 +34,10 @@ const components = {
         return <WebTableTool />;
       case "codeserver":
         return <CodeServer />;
+      case "execution-controls":
+        return <ExecutionControls />;
+      case "Workflow-manager":
+        return <WorkflowManager />;
       default:
         return <div>Panel inconnu</div>;
     }
@@ -63,12 +74,12 @@ const App: React.FC = () => {
       position: { direction: "left" },
     });
     api.addPanel({
-      id: "Workflow-tools",
-      title: "Workflow",
+      id: "Workflow-manager",
+      title: "Workflow Manager",
       component: "default",
     });
     api.addPanel({
-      id: "execution",
+      id: "execution-controls",
       title: "Execution",
       component: "default",
     });
