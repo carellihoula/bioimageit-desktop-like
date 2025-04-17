@@ -3,6 +3,8 @@
  * This file contains TypeScript interfaces for the data structure used in the application.
  */
 
+import { LucideIcon } from "lucide-react";
+
 // Type for each result, which can contain numbers, strings, or null values
 interface ImageResult {
   [key: string]: number | string | null;
@@ -32,4 +34,15 @@ export interface FileNode {
   name: string;
   type: "folder" | "file";
   children?: FileNode[];
+}
+
+export interface MenuItemConfig {
+  label: string;
+  icon?: LucideIcon;
+  value: string;
+}
+
+export interface MainMenuItem {
+  label: string;
+  items: MenuItemConfig[];
 }

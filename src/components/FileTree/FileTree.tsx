@@ -5,7 +5,7 @@ import { MUI_X_PRODUCTS } from "../../mock/fileTree";
 
 export default function FileTree() {
   return (
-    <Box sx={{ minHeight: 352, minWidth: 250 }}>
+    <Box sx={{ minHeight: 352, minWidth: 250, color: "dv-fg" }}>
       <RichTreeView items={MUI_X_PRODUCTS} />
     </Box>
   );

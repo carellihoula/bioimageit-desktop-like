@@ -1,6 +1,5 @@
 import { Button, VStack, Box, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useColorModeValue } from "@/components/ui/color-mode";
 
 const workflows = [
   "/home/carellihoula/Documents/demoworkflow/demoworkflow",
@@ -18,7 +17,6 @@ const workflows = [
  */
 export const WorkflowManager = () => {
   const [selected, setSelected] = useState<string | null>(null);
-  const selectedBg = useColorModeValue("cyan.100", "cyan.700");
 
   return (
     <VStack
@@ -26,13 +24,31 @@ export const WorkflowManager = () => {
       p={4}
       borderRadius="md"
       width="100%"
-      color="gray.200"
+      color="dvForeground"
       className="w-full"
     >
-      <Button variant="outline" size="sm">
+      <Button
+        variant="outline"
+        size="sm"
+        bg="dvBackground"
+        color="dvForeground"
+        borderColor="dvSeparatorBorder"
+        _hover={{
+          bg: "dvHoverBg",
+        }}
+      >
         New workflow
       </Button>
-      <Button variant="outline" size="sm">
+      <Button
+        variant="outline"
+        size="sm"
+        bg="dvBackground"
+        color="dvForeground"
+        borderColor="dvSeparatorBorder"
+        _hover={{
+          bg: "dvHoverBg",
+        }}
+      >
         Open workflow
       </Button>
 
@@ -43,17 +59,18 @@ export const WorkflowManager = () => {
         h="150px"
         overflowY="auto"
         fontSize="sm"
-        bg="gray.900"
+        bg="dvBackground"
         borderRadius="md"
       >
         {workflows.map((path) => (
           <Text
             key={path}
+            color={"dv-fg"}
             px={2}
             py={1}
             borderRadius="sm"
             cursor="pointer"
-            bg={selected === path ? selectedBg : "transparent"}
+            bg={selected === path ? "#05213d" : "transparent"}
             _hover={{ bg: "gray.700" }}
             onClick={() => setSelected(path)}
           >
@@ -62,16 +79,52 @@ export const WorkflowManager = () => {
         ))}
       </Box>
 
-      <Button variant="outline" size="sm">
+      <Button
+        variant="outline"
+        size="sm"
+        bg="dvBackground"
+        color="dvForeground"
+        borderColor="dvSeparatorBorder"
+        _hover={{
+          bg: "dvHoverBg",
+        }}
+      >
         Rename workflow
       </Button>
-      <Button variant="outline" size="sm">
+      <Button
+        variant="outline"
+        size="sm"
+        bg="dvBackground"
+        color="dvForeground"
+        borderColor="dvSeparatorBorder"
+        _hover={{
+          bg: "dvHoverBg",
+        }}
+      >
         Duplicate workflow
       </Button>
-      <Button variant="outline" size="sm">
+      <Button
+        variant="outline"
+        size="sm"
+        bg="dvBackground"
+        color="dvForeground"
+        borderColor="dvSeparatorBorder"
+        _hover={{
+          bg: "dvHoverBg",
+        }}
+      >
         Export workflow
       </Button>
-      <Button variant="outline" size="sm" colorScheme="red">
+      <Button
+        variant="outline"
+        size="sm"
+        bg="dvBackground"
+        color="dvForeground"
+        borderColor="dvSeparatorBorder"
+        _hover={{
+          bg: "dvHoverBg",
+        }}
+      >
         Delete workflow
       </Button>
     </VStack>

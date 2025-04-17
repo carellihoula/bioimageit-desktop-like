@@ -1,54 +1,76 @@
-# React + TypeScript + Vite
+# Desktop-like Interface for BioImageIT
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, desktop-inspired interface for BioImageIT, built with React, Tailwind CSS, and Dockview. This project aims to provide a familiar, flexible, and extensible UI for interacting with bioimage data, workflows, and tools in a single application window.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Dockable Panels**: Rearrange panels (Explorer, Workflow Manager, Execution Controls, Code Server, etc.) using drag-and-drop.
+- **File Explorer**: Tree-based file navigator with file icons based on extensions.
+- **Workflow Manager**: Browse, select, and manage multiple bioimage workflows.
+- **Execution Controls**: Run, clear, and mark nodes in a workflow as executed.
+- **Code Server Panel**: Embedded code editor or server within a panel.
+- **Responsive Layout**: Adapts panel sizes for smaller screens.
+- **Custom Menu Bar**: Desktop-like menu bar (File, Tools, Help) with hover-activated dropdowns.
+- **Theming**: Light and dark themes via CSS variables and Tailwind configs.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [React](https://reactjs.org/) for the UI framework.
+- [Vite](https://vitejs.dev/) as the build tool.
+- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling.
+- [Dockview](https://dockview.dev/) for dockable panel management.
+- [Chakra UI](https://chakra-ui.com/) for reusable components.
+- [Lucide React](https://lucide.dev/icons/) for iconography.
+- [React Icons](https://react-icons.github.io/react-icons/) for file and menu icons.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Installation
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. **Clone the repository**
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+   ```bash
+   git clone https://gitlab.inria.fr/cntsoumo/bioimageit-desktop-like.
+   cd bioimageit-desktop-like
+   ```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+   **_or using pnpm_**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Start the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+   **_or using pnpm_**
+
+   ```bash
+   pnpm dev
+   ```
+
+   Visit `http://localhost:5173` (or the port shown) to see the app.
+
+## Usage
+
+- **Drag panels** by their title bars to dock, float, or rearrange.
+- **Open workflows** from the Workflow Manager panel.
+- **Run nodes** using the Execution Controls panel.
+- **Browse files** in the Explorer panel; double-click or context-click for actions.
+- **Access menu** items (File, Tools, Help) via the top menu bar.
+
+## Configuration
+
+- **Tailwind Config**: Customize colors and theme in `tailwind.config.js`.
+- **Dockview Theme**: Toggle between light (`dockview-theme-light`) and dark (`dockview-theme-dark`) by changing the CSS class on the root `<DockviewReact>` component.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

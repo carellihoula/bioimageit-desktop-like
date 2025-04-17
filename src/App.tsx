@@ -14,6 +14,11 @@ import { WebTableTool } from "./panels/WebTableTool";
 import { CodeServer } from "./panels/CodeServer";
 import { ExecutionControls } from "./panels/ExecutionControls";
 import { WorkflowManager } from "./panels/WorkflowManager";
+import { MainMenuBar } from "./components/common/MainMenuBar";
+import {
+  dockviewThemes,
+  DockviewThemeSelector,
+} from "./components/common/DockviewThemeSelector";
 
 /**
  * Components to be used in the Dockview panels.
@@ -48,7 +53,16 @@ const components = {
 const App: React.FC = () => {
   // Panel columnHook to track window width
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [theme, setTheme] = useState(dockviewThemes[0].theme);
+  // Each time the `theme` changes, we apply its className to <html>.
+  // Each time the theme changes, we (re)apply the class to html
+  useEffect(() => {
+    const root = document.documentElement;
 
+    dockviewThemes.forEach((t) => root.classList.remove(t.theme.className));
+
+    root.classList.add(theme.className);
+  }, [theme]);
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -124,11 +138,24 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ height: "100vh", width: "100vw" }}>
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <MainMenuBar
+        setTheme={setTheme}
+        theme={theme}
+        // className={theme.className}
+      />
       <DockviewReact
-        className="dockview-theme-dark"
         onReady={onReady}
         components={components}
+        theme={theme}
+        className={theme.className}
       />
     </div>
   );
