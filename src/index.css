@@ -31,19 +31,10 @@ body {
 .dv-hover-fg {
   color: var(--dv-drag-over-tab-color);
 }
-.dv-hover-border {
-  border-color: var(--dv-drag-over-border-color);
-}
-.dv-active-bg {
-  background-color: var(--dv-activegroup-background-color);
+.dv-group-bg {
+  background-color: var(--dv-group-view-background-color);
 }
 
-.dv-active-border {
-  border-color: var(--dv-activegroup-border-color);
-}
-.dv-inactive-bg {
-  background-color: var(--dv-inactivegroup-background-color);
-}
-.dv-inactive-fg {
-  color: var(--dv-inactivegroup-tab-color);
+.dv-tab-bg {
+  background-color: var(--dv-activegroup-visiblepanel-tab-background-color);
 }

@@ -49,7 +49,7 @@ export function DockviewThemeSelector({
     <Menu.Root>
       {/* The button that opens the menu */}
       <Menu.Trigger asChild>
-        <Button variant="outline" size="sm" height={"85%"} marginRight={4}>
+        <Button variant={"plain"} size="sm" color={"dvForeground"}>
           Theme <LuChevronDown />
           {active?.label ?? "Theme"}
         </Button>
@@ -58,12 +58,13 @@ export function DockviewThemeSelector({
       {/* The portal containing the menu content */}
       <Portal>
         <Menu.Positioner>
-          <Menu.Content>
+          <Menu.Content bg={"dvGroupBg"} boxShadow={"dvFloating"}>
             {dockviewThemes.map((opt) => (
               <Menu.Item
                 key={opt.label}
                 onClick={() => handleSelect(opt)}
                 fontWeight={opt.theme === selected ? "bold" : "normal"}
+                color={"dvForeground"}
               >
                 {opt.label}
               </Menu.Item>
