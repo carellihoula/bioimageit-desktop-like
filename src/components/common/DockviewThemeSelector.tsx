@@ -65,6 +65,7 @@ export function DockviewThemeSelector({
                 onClick={() => handleSelect(opt)}
                 fontWeight={opt.theme === selected ? "bold" : "normal"}
                 color={"dvForeground"}
+                cursor={"pointer"}
               >
                 {opt.label}
               </Menu.Item>

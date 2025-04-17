@@ -112,8 +112,9 @@ export const MainMenuBar = ({
                       <Menu.Item
                         key={item.value}
                         value={item.value.toLowerCase().replace(/\s+/g, "-")}
-                        className="flex items-center px-3 py-1 gap-2"
+                        // className="flex items-center px-3 py-1 gap-2"
                         color={"dvForeground"}
+                        cursor={"pointer"}
                       >
                         {IconComponent && <IconComponent size={16} />}
                         {item.label}
