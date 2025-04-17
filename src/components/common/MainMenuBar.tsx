@@ -75,18 +75,7 @@
 
 import { Button, Menu, Portal } from "@chakra-ui/react";
 import { dockviewThemes, DockviewThemeSelector } from "./DockviewThemeSelector";
-
-type MainMenuItem = {
-  label: string;
-  items: string[];
-};
-
-const mainMenus: MainMenuItem[] = [
-  { label: "File", items: ["New File", "Open", "Save", "Close"] },
-  { label: "Tools", items: ["Settings", "Extensions"] },
-  { label: "Help", items: ["About", "Documentation"] },
-];
-
+import { mainMenus } from "@/lib/const";
 type ThemeOption = (typeof dockviewThemes)[number];
 
 /**
@@ -102,9 +91,8 @@ export const MainMenuBar = ({
   setTheme: (theme: ThemeOption["theme"]) => void;
   theme?: ThemeOption["theme"];
 }) => {
-  // const { toggleColorMode, colorMode } = useColorMode();
   return (
-    <div className={`flex gap-2 justify-between items-center overflow-hidden `}>
+    <div className={`flex justify-between items-center overflow-hidden `}>
       <div>
         {mainMenus.map((menu) => (
           <Menu.Root key={menu.label}>

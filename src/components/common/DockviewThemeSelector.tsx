@@ -7,9 +7,9 @@ import {
   themeVisualStudio,
   themeAbyss,
   themeDracula,
-  themeReplit,
-  themeLightSpaced,
-  themeAbyssSpaced,
+  // themeReplit,
+  // themeLightSpaced,
+  // themeAbyssSpaced,
 } from "dockview";
 
 export const dockviewThemes = [
@@ -18,13 +18,18 @@ export const dockviewThemes = [
   { label: "Visual Studio", theme: themeVisualStudio },
   { label: "Abyss", theme: themeAbyss },
   { label: "Dracula", theme: themeDracula },
-  { label: "Replit", theme: themeReplit },
-  { label: "Light Spaced", theme: themeLightSpaced },
-  { label: "Abyss Spaced", theme: themeAbyssSpaced },
+  // { label: "Replit", theme: themeReplit },
+  // { label: "Light Spaced", theme: themeLightSpaced },
+  // { label: "Abyss Spaced", theme: themeAbyssSpaced },
 ] as const;
 
 type ThemeOption = (typeof dockviewThemes)[number];
 
+/**
+ * DockviewThemeSelector component to display a theme selector.
+ * The user can select a theme from the list of available themes.
+ * We use The DockView themes for the theme selector.
+ */
 export function DockviewThemeSelector({
   onChange,
   initialTheme = themeLight,
@@ -42,15 +47,15 @@ export function DockviewThemeSelector({
 
   return (
     <Menu.Root>
-      {/* Le bouton qui ouvre le menu */}
+      {/* The button that opens the menu */}
       <Menu.Trigger asChild>
-        <Button variant="outline" size="sm">
-          Theme <LuChevronDown style={{ marginLeft: "0.5rem" }} />
+        <Button variant="outline" size="sm" height={"85%"} marginRight={4}>
+          Theme <LuChevronDown />
           {active?.label ?? "Theme"}
         </Button>
       </Menu.Trigger>
 
-      {/* Le portail qui contient le contenu du menu */}
+      {/* The portal containing the menu content */}
       <Portal>
         <Menu.Positioner>
           <Menu.Content>

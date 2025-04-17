@@ -33,3 +33,8 @@ export interface FileNode {
   type: "folder" | "file";
   children?: FileNode[];
 }
+
+export interface MainMenuItem {
+  label: string;
+  items: string[];
+}
