@@ -15,10 +15,7 @@ import { CodeServer } from "./panels/CodeServer";
 import { ExecutionControls } from "./panels/ExecutionControls";
 import { WorkflowManager } from "./panels/WorkflowManager";
 import { MainMenuBar } from "./components/common/MainMenuBar";
-import {
-  dockviewThemes,
-  DockviewThemeSelector,
-} from "./components/common/DockviewThemeSelector";
+import { dockviewThemes } from "./components/common/DockviewThemeSelector";
 
 /**
  * Components to be used in the Dockview panels.
