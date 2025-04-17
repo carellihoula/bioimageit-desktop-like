@@ -15,6 +15,10 @@ import { CodeServer } from "./panels/CodeServer";
 import { ExecutionControls } from "./panels/ExecutionControls";
 import { WorkflowManager } from "./panels/WorkflowManager";
 import { MainMenuBar } from "./components/common/MainMenuBar";
+import {
+  dockviewThemes,
+  DockviewThemeSelector,
+} from "./components/common/DockviewThemeSelector";
 
 /**
  * Components to be used in the Dockview panels.
@@ -49,7 +53,16 @@ const components = {
 const App: React.FC = () => {
   // Panel columnHook to track window width
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+  const [theme, setTheme] = useState(dockviewThemes[0].theme);
+  // À chaque changement de `theme`, on applique sa className sur <html>
+  // À chaque changement de thème, on (re)pose la classe sur html
+  useEffect(() => {
+    const root = document.documentElement;
+    // Supprime toutes les classes Dockview existantes
+    dockviewThemes.forEach((t) => root.classList.remove(t.theme.className));
+    // Ajoute la nouvelle
+    root.classList.add(theme.className);
+  }, [theme]);
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -133,11 +146,16 @@ const App: React.FC = () => {
         flexDirection: "column",
       }}
     >
-      <MainMenuBar />
+      <MainMenuBar
+        setTheme={setTheme}
+        theme={theme}
+        // className={theme.className}
+      />
       <DockviewReact
-        className="dockview-theme-dark"
         onReady={onReady}
         components={components}
+        theme={theme}
+        className={theme.className}
       />
     </div>
   );

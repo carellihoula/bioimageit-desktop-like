@@ -7,12 +7,16 @@ export function Tools() {
     <div className="flex flex-col gap-2 h-full">
       <div className=" flex justify-center items-center mt-4 w-full">
         <Button
-          colorPalette="gray"
           style={{
             width: "95%",
             marginTop: "1rem",
             borderRadius: "4px",
-            color: "black",
+          }}
+          bg="dvBackground"
+          color="dvForeground"
+          borderColor="dvSeparatorBorder"
+          _hover={{
+            bg: "dvHoverBg",
           }}
         >
           Create Tool
@@ -22,7 +26,7 @@ export function Tools() {
         <SearchBar />
       </div>
 
-      <div style={{ width: "98%" }}>
+      <div className="w-[98%] dv-fg">
         <FileTree />
       </div>
     </div>

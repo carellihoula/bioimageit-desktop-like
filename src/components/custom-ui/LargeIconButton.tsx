@@ -1,7 +1,10 @@
+// src/components/custom-ui/LargeIconButton.tsx
 import { Button } from "@chakra-ui/react";
 import React from "react";
 
-interface LargeIconButtonProps {
+// This component is a large icon button that can be used in various parts of the application.
+// It is styled using Chakra UI and accepts props for label, icon, onClick handler, and additional class names.
+export interface LargeIconButtonProps {
   label: string;
   icon?: React.ReactNode;
   onClick?: () => void;
@@ -17,17 +20,23 @@ export const LargeIconButton: React.FC<LargeIconButtonProps> = ({
   return (
     <Button
       variant="outline"
-      onClick={onClick}
       width="95%"
       borderRadius="sm"
+      size="sm"
       mt={2}
-      color="white"
       display="flex"
       justifyContent="center"
+      onClick={onClick}
+      bg="dvBackground"
+      color="dvForeground"
+      borderColor="dvSeparatorBorder"
+      _hover={{
+        bg: "dvHoverBg",
+      }}
       className={className}
     >
       {icon}
-      {label}
+      <span style={{ marginLeft: "0.5rem" }}>{label}</span>
     </Button>
   );
 };

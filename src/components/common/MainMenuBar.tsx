@@ -74,6 +74,7 @@
 // };
 
 import { Button, Menu, Portal } from "@chakra-ui/react";
+import { dockviewThemes, DockviewThemeSelector } from "./DockviewThemeSelector";
 
 type MainMenuItem = {
   label: string;
@@ -86,43 +87,55 @@ const mainMenus: MainMenuItem[] = [
   { label: "Help", items: ["About", "Documentation"] },
 ];
 
+type ThemeOption = (typeof dockviewThemes)[number];
+
 /**
  * MainMenuBar component to display a menu bar with main menus.
  * Each menu can have multiple items.
  * the user must click on the menu to view the items.
  */
 
-export const MainMenuBar = () => {
+export const MainMenuBar = ({
+  setTheme,
+  theme,
+}: {
+  setTheme: (theme: ThemeOption["theme"]) => void;
+  theme?: ThemeOption["theme"];
+}) => {
+  // const { toggleColorMode, colorMode } = useColorMode();
   return (
-    <div style={{ display: "flex", gap: "8px" }}>
-      {mainMenus.map((menu) => (
-        <Menu.Root key={menu.label}>
-          <Menu.Trigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              _focus={{ boxShadow: "none" }}
-              _focusVisible={{ boxShadow: "none" }}
-            >
-              {menu.label}
-            </Button>
-          </Menu.Trigger>
-          <Portal>
-            <Menu.Positioner>
-              <Menu.Content>
-                {menu.items.map((item) => (
-                  <Menu.Item
-                    key={item}
-                    value={item.toLowerCase().replace(/\s+/g, "-")}
-                  >
-                    {item}
-                  </Menu.Item>
-                ))}
-              </Menu.Content>
-            </Menu.Positioner>
-          </Portal>
-        </Menu.Root>
-      ))}
+    <div className={`flex gap-2 justify-between items-center dv-bg dv-fg`}>
+      <div>
+        {mainMenus.map((menu) => (
+          <Menu.Root key={menu.label}>
+            <Menu.Trigger asChild>
+              <Button
+                variant={"plain"}
+                size="sm"
+                _focus={{ boxShadow: "none" }}
+                _focusVisible={{ boxShadow: "none" }}
+              >
+                {menu.label}
+              </Button>
+            </Menu.Trigger>
+            <Portal>
+              <Menu.Positioner>
+                <Menu.Content>
+                  {menu.items.map((item) => (
+                    <Menu.Item
+                      key={item}
+                      value={item.toLowerCase().replace(/\s+/g, "-")}
+                    >
+                      {item}
+                    </Menu.Item>
+                  ))}
+                </Menu.Content>
+              </Menu.Positioner>
+            </Portal>
+          </Menu.Root>
+        ))}
+      </div>
+      <DockviewThemeSelector onChange={setTheme} initialTheme={theme} />
     </div>
   );
 };
