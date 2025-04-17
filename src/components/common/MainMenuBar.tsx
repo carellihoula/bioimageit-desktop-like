@@ -104,7 +104,7 @@ export const MainMenuBar = ({
 }) => {
   // const { toggleColorMode, colorMode } = useColorMode();
   return (
-    <div className={`flex gap-2 justify-between items-center dv-bg dv-fg`}>
+    <div className={`flex gap-2 justify-between items-center overflow-hidden `}>
       <div>
         {mainMenus.map((menu) => (
           <Menu.Root key={menu.label}>

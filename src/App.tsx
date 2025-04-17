@@ -54,13 +54,13 @@ const App: React.FC = () => {
   // Panel columnHook to track window width
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [theme, setTheme] = useState(dockviewThemes[0].theme);
-  // À chaque changement de `theme`, on applique sa className sur <html>
-  // À chaque changement de thème, on (re)pose la classe sur html
+  // Each time the `theme` changes, we apply its className to <html>.
+  // Each time the theme changes, we (re)apply the class to html
   useEffect(() => {
     const root = document.documentElement;
-    // Supprime toutes les classes Dockview existantes
+
     dockviewThemes.forEach((t) => root.classList.remove(t.theme.className));
-    // Ajoute la nouvelle
+
     root.classList.add(theme.className);
   }, [theme]);
   useEffect(() => {
