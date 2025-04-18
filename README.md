@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 # Desktop-like Interface for BioImageIT
 
 A modern, desktop-inspired interface for BioImageIT, built with React, Tailwind CSS, and Dockview. This project aims to provide a familiar, flexible, and extensible UI for interacting with bioimage data, workflows, and tools in a single application window.
