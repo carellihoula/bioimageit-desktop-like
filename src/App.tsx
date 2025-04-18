@@ -15,10 +15,8 @@ import { CodeServer } from "./panels/CodeServer";
 import { ExecutionControls } from "./panels/ExecutionControls";
 import { WorkflowManager } from "./panels/WorkflowManager";
 import { MainMenuBar } from "./components/common/MainMenuBar";
-import {
-  dockviewThemes,
-  DockviewThemeSelector,
-} from "./components/common/DockviewThemeSelector";
+import { dockviewThemes } from "./components/common/DockviewThemeSelector";
+import { LogsPanel } from "./panels/LogsPanel";
 
 /**
  * Components to be used in the Dockview panels.
@@ -43,6 +41,8 @@ const components = {
         return <ExecutionControls />;
       case "Workflow-manager":
         return <WorkflowManager />;
+      case "logstool":
+        return <LogsPanel />;
       default:
         return <div>Panel inconnu</div>;
     }
@@ -76,11 +76,13 @@ const App: React.FC = () => {
   const workflowInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 800;
   const codeServerInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 600;
 
+  // Initialize and configure the dockview layout with panels for tools, workflow management,
+  // execution controls, properties, workflow editor, web table tool, logs, and code server
   const onReady = (event: DockviewReadyEvent) => {
     const api = event.api as DockviewApi;
 
     // Column panel Tools / Properties
-    api.addPanel({
+    const toolsPanel = api.addPanel({
       id: "tools",
       title: "Tools",
       component: "default",
@@ -97,6 +99,9 @@ const App: React.FC = () => {
       title: "Execution",
       component: "default",
     });
+
+    //ttoolsPanel is active by default
+    toolsPanel.api.setActive();
 
     api.addPanel({
       id: "properties",
@@ -119,13 +124,21 @@ const App: React.FC = () => {
       position: { direction: "right" },
     });
 
-    api.addPanel({
+    const webTablePanel = api.addPanel({
       id: "webtabletool",
       title: "WebTable Tool",
       component: "default",
       initialHeight: 320,
       position: { referencePanel: "workflow", direction: "below" },
     });
+    api.addPanel({
+      id: "logstool",
+      title: "Logs Tool",
+      component: "default",
+    });
+
+    //webTablePanel is active by default
+    webTablePanel.api.setActive();
 
     // Panel CodeServer
     api.addPanel({
@@ -136,7 +149,6 @@ const App: React.FC = () => {
       position: { direction: "right" },
     });
   };
-
   return (
     <div
       style={{
