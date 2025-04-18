@@ -1,5 +1,6 @@
-import React from "react";
-import { Handle, Position, Node, NodeProps } from "@xyflow/react";
+// import React from "react";
+import { Position, Node, NodeProps } from "@xyflow/react";
+import { CustomHandle } from "./CustomHandle";
 
 export type IOData = { label?: string };
 // Define a React Flow Node type whose data matches IOData and whose edge IDs are strings
@@ -13,13 +14,16 @@ type IONode = Node<IOData, string>;
 export function IOBlockNode({ id, data }: NodeProps<IONode>) {
   return (
     <div
+      tabIndex={0}
       className="
-        border-4 border-blue-500
+        border border-blue-500
         rounded-xl
         bg-white
         w-48
         overflow-hidden
         shadow-sm
+        focus:outline-none   
+        focus:border-4     
       "
     >
       {/* header */}
@@ -50,30 +54,8 @@ export function IOBlockNode({ id, data }: NodeProps<IONode>) {
         </label>
       </div>
 
-      <Handle
-        type="target"
-        position={Position.Left}
-        // style={{ top: "50%", background: "#3b82f6" }}
-        style={{
-          top: "50%",
-          width: 16,
-          height: 16,
-          background: "#10b981",
-          border: "2px solid white",
-        }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        style={{
-          top: "50%",
-          width: 16,
-          height: 16,
-          background: "#10b981",
-          borderRadius: 8,
-          border: "2px solid white",
-        }}
-      />
+      <CustomHandle type="target" position={Position.Left} />
+      <CustomHandle type="source" position={Position.Right} />
     </div>
   );
 }
