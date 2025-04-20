@@ -5,7 +5,11 @@ import { Handle, Position, Node, NodeProps, useReactFlow } from "@xyflow/react";
 export type CommentData = { comment?: string };
 type CommentNodeType = Node<CommentData, string>;
 
-export function CommentNode({ id, data }: NodeProps<CommentNodeType>) {
+export function CommentNode({
+  id,
+  data,
+  selected,
+}: NodeProps<CommentNodeType>) {
   const { setNodes } = useReactFlow();
   const taRef = useRef<HTMLTextAreaElement>(null);
 
@@ -49,6 +53,7 @@ export function CommentNode({ id, data }: NodeProps<CommentNodeType>) {
         fontFamily: "sans-serif",
         width: 180,
       }}
+      className={`${selected && "ring-2 ring-blue-500"}`}
     >
       <strong style={{ display: "block", marginBottom: 4 }}>Comment</strong>
       <hr style={{ borderColor: "#666", marginBottom: 4 }} />

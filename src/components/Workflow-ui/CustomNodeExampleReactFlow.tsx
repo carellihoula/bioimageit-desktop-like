@@ -7,7 +7,7 @@ interface CustomNodeData {
   job: string;
 }
 
-function CustomNode({ data }: { data: CustomNodeData }) {
+function CustomNodeExampleReactFlow({ data }: { data: CustomNodeData }) {
   return (
     <div className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400">
       <div className="flex">
@@ -34,4 +34,4 @@ function CustomNode({ data }: { data: CustomNodeData }) {
   );
 }
 
-export default memo(CustomNode);
+export default memo(CustomNodeExampleReactFlow);

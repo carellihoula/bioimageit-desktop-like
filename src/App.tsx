@@ -73,7 +73,7 @@ const App: React.FC = () => {
 
   // Calculate initial widths responsively
   const toolsInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 250;
-  const workflowInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 800;
+  const workflowInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 1300;
   const codeServerInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 600;
 
   // Initialize and configure the dockview layout with panels for tools, workflow management,
@@ -141,13 +141,13 @@ const App: React.FC = () => {
     webTablePanel.api.setActive();
 
     // Panel CodeServer
-    api.addPanel({
-      id: "codeserver",
-      title: "Code Server",
-      component: "default",
-      initialWidth: codeServerInitialWidth,
-      position: { direction: "right" },
-    });
+    // api.addPanel({
+    //   id: "codeserver",
+    //   title: "Code Server",
+    //   component: "default",
+    //   initialWidth: codeServerInitialWidth,
+    //   position: { direction: "right" },
+    // });
   };
   return (
     <div
