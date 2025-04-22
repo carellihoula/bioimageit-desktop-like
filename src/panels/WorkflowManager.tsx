@@ -1,5 +1,5 @@
 import { Button, VStack, Box, Text } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const workflows = [
   "/home/carellihoula/Documents/demoworkflow/demoworkflow",
@@ -70,8 +70,8 @@ export const WorkflowManager = () => {
             py={1}
             borderRadius="sm"
             cursor="pointer"
-            bg={selected === path ? "#05213d" : "transparent"}
-            _hover={{ bg: "gray.700" }}
+            bg={selected === path ? "dvHoverBg" : "transparent"}
+            _hover={{ bg: "dvHoverBg" }}
             onClick={() => setSelected(path)}
           >
             {path}
