@@ -11,20 +11,18 @@ type IONode = Node<IOData, string>;
  * - Two radio buttons ("in" / "out") for selecting direction
  * - Invisible React Flow handles on the left and right edges
  */
-export function IOBlockNode({ id, data }: NodeProps<IONode>) {
+export function IOBlockNode({ id, data, selected }: NodeProps<IONode>) {
   return (
     <div
       tabIndex={0}
-      className="
-        border border-blue-500
+      className={`border border-blue-500
         rounded-xl
         bg-white
         w-48
         overflow-hidden
         shadow-sm
         focus:outline-none   
-        focus:border-4     
-      "
+         ${selected && "ring-2 ring-blue-500"}`}
     >
       {/* header */}
       <div className="bg-green-100 text-center font-medium py-1">
