@@ -1,4 +1,6 @@
+/* @import url("./xy-theme.css"); */
 @import "dockview/dist/styles/dockview.css";
+
 @import "tailwindcss";
 @import "tw-animate-css";
 

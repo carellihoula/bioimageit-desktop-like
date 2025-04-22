@@ -7,7 +7,7 @@ type StickyNode = Node<StickyData, string>;
 
 const MAX_TITLE_LENGTH = 20;
 
-export function StickyNoteNode({ id, data }: NodeProps<StickyNode>) {
+export function StickyNoteNode({ id, data, selected }: NodeProps<StickyNode>) {
   const { setNodes } = useReactFlow();
   const bodyRef = useRef<HTMLTextAreaElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -44,6 +44,7 @@ export function StickyNoteNode({ id, data }: NodeProps<StickyNode>) {
         padding: 8,
         fontFamily: "monospace",
       }}
+      className={`${selected && "ring-2 ring-blue-500"}`}
     >
       {/* Editable single‐line title */}
       <input
