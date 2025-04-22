@@ -49,5 +49,5 @@ export interface MainMenuItem {
 
 export interface ContextMenuItem {
   label: string;
-  action: "delete" | "duplicate" | "cancel";
+  action: "delete" | "duplicate" | "cancel" | "edit";
 }

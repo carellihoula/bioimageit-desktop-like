@@ -143,16 +143,29 @@ export default function Workflow() {
     setCtx(null);
   }, []);
 
-  const actionsMap = {
-    delete: deleteNode,
-    duplicate: duplicateNode,
-    cancel: closeMenu,
-  };
-
   const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
-    actionsMap[action]?.();
+    if (action === "duplicate") {
+      duplicateNode();
+    } else if (action === "delete") {
+      deleteNode();
+    } else if (action === "cancel") {
+      closeMenu();
+    } else if (action === "edit") {
+      alert("open code-server");
+    }
     setCtx(null);
   };
+
+  // const actionsMap = {
+  //   delete: deleteNode,
+  //   duplicate: duplicateNode,
+  //   cancel: closeMenu,
+  // };
+
+  // const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
+  //   actionsMap[action]?.();
+  //   setCtx(null);
+  // };
 
   // global click to close menu
   useEffect(() => {
