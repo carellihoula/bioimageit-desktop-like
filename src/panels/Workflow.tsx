@@ -21,6 +21,10 @@ import { CommentNode } from "@/components/Workflow-ui/CommentNode";
 import { IOBlockNode } from "@/components/Workflow-ui/BasicIOBlockNode";
 import { useCopyPaste } from "@/hooks/workflow-ui/useCopyPaste";
 import { useFlowHistory } from "@/hooks/workflow-ui/useFlowHistory";
+import { contextMenu } from "@/lib/const";
+// import { Item } from "@radix-ui/react-menubar";
+import { ContextMenu } from "@/components/Workflow-ui/ContextMenu";
+import { initialNodes } from "@/mock/initialNodesAndEdges";
 
 // keys in localStorage
 const STORAGE_NODES = "workflow-nodes";
@@ -32,32 +36,6 @@ const nodeTypes = {
   io: IOBlockNode,
 };
 
-const initialNodes: Node[] = [
-  {
-    id: "1",
-    type: "comment",
-    position: { x: 200, y: 100 },
-    data: { comment: "This is a comment" },
-  },
-  {
-    id: "2",
-    type: "sticky",
-    position: { x: 400, y: 100 },
-    data: { text: "Text Goes Here" },
-  },
-  {
-    id: "3",
-    type: "io",
-    position: { x: 300, y: 300 },
-    data: { label: "Stracking detection" },
-  },
-  {
-    id: "4",
-    type: "io",
-    position: { x: 400, y: 500 },
-    data: { label: "Extract Label" },
-  },
-];
 const initialEdges: Edge[] = [];
 
 export default function Workflow() {
@@ -116,16 +94,13 @@ export default function Workflow() {
     [onRFEdgesChange]
   );
 
-  // onConnect: update + push history
   const onConnect = useCallback(
     (params: Connection) => {
-      setEdges((eds) => {
-        const next = addEdge(params, eds);
-        push(nodes, next);
-        return next;
-      });
+      const nextEdges = addEdge(params, edges);
+      setEdges(nextEdges);
+      push(nodes, nextEdges); // 👈 push après la MAJ effective
     },
-    [nodes, push]
+    [edges, setEdges, push, nodes]
   );
 
   // onNodeDragStop: push history once
@@ -146,7 +121,7 @@ export default function Workflow() {
     if (!ctx) return;
     setNodes((nds) => nds.filter((n) => n.id !== ctx.node.id));
     setCtx(null);
-  }, [ctx]);
+  }, [ctx, setNodes]);
 
   const duplicateNode = useCallback(() => {
     if (!ctx) return;
@@ -162,11 +137,22 @@ export default function Workflow() {
       return [...nds, copy];
     });
     setCtx(null);
-  }, [ctx]);
+  }, [ctx, setNodes]);
 
   const closeMenu = useCallback(() => {
     setCtx(null);
   }, []);
+
+  const actionsMap = {
+    delete: deleteNode,
+    duplicate: duplicateNode,
+    cancel: closeMenu,
+  };
+
+  const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
+    actionsMap[action]?.();
+    setCtx(null);
+  };
 
   // global click to close menu
   useEffect(() => {
@@ -206,6 +192,7 @@ export default function Workflow() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onNodeDragStart={() => setCtx(null)}
         onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}
       >
@@ -214,31 +201,15 @@ export default function Workflow() {
       </ReactFlow>
 
       {/* Context menu */}
+
       {ctx && (
-        <div
-          className="bg-white border border-gray-300 rounded shadow-md z-50"
-          style={{ position: "fixed", top: ctx.y, left: ctx.x }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onClick={deleteNode}
-          >
-            Delete Node
-          </div>
-          <div
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onClick={duplicateNode}
-          >
-            Duplicate Node
-          </div>
-          <div
-            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-            onClick={closeMenu}
-          >
-            Cancel
-          </div>
-        </div>
+        <ContextMenu
+          x={ctx.x}
+          y={ctx.y}
+          visible={!!ctx}
+          items={contextMenu}
+          onAction={handleAction}
+        />
       )}
     </div>
   );

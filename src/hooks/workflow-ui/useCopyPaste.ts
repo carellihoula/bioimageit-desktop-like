@@ -21,7 +21,7 @@ export const useCopyPaste = (rfInstance: ReactFlowInstance | null) => {
       event.preventDefault();
       const raw = event.clipboardData?.getData("flowchart:nodes");
       if (!raw) return;
-      let nodes: Node<any, string>[];
+      let nodes: Node[];
       try {
         nodes = JSON.parse(raw);
       } catch {

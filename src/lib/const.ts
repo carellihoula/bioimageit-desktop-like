@@ -1,5 +1,5 @@
 // src/lib/const.ts
-import { MainMenuItem } from "@/types";
+import { ContextMenuItem, MainMenuItem } from "@/types";
 import { Settings, PlusSquare, FolderOpen, Save, Share2 } from "lucide-react";
 
 export const mainMenus: MainMenuItem[] = [
@@ -32,4 +32,10 @@ export const mainMenus: MainMenuItem[] = [
       { label: "Documentation", value: "documentation" },
     ],
   },
+];
+
+export const contextMenu: ContextMenuItem[] = [
+  { label: "Delete Node", action: "delete" },
+  { label: "Duplicate Node", action: "duplicate" },
+  { label: "Cancel", action: "cancel" },
 ];

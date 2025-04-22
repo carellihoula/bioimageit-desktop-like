@@ -74,7 +74,7 @@ const App: React.FC = () => {
   // Calculate initial widths responsively
   const toolsInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 250;
   const workflowInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 1300;
-  const codeServerInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 600;
+  // const codeServerInitialWidth = windowWidth < 768 ? windowWidth * 0.9 : 600;
 
   // Initialize and configure the dockview layout with panels for tools, workflow management,
   // execution controls, properties, workflow editor, web table tool, logs, and code server
