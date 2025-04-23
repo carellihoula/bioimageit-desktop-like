@@ -51,3 +51,10 @@ export interface ContextMenuItem {
   label: string;
   action: "delete" | "duplicate" | "cancel" | "edit";
 }
+
+export interface ISearch {
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+}
