@@ -3,22 +3,15 @@ import { Input, InputGroup } from "@chakra-ui/react";
 import { FC } from "react";
 import { LuSearch } from "react-icons/lu";
 
-export const SearchBar = () => (
-  <InputGroup
-    startElement={<LuSearch color="" className="dv-fg" />}
-    // endElement={<Kbd>⌘K</Kbd>}
-    style={{ width: "95%" }}
-  >
-    <Input
-      placeholder="Search tools"
-      color={"dvForeground"}
-      border={"dvSeparatorBorder"}
-      // outline={"--dv-paneview-active-outline-color"}
-    />
-  </InputGroup>
-);
+/**
+ * SearchBar component that renders an input field with a search icon
+ * @param value - The current value of the search input
+ * @param onChange - Function to handle input changes
+ * @param placeholder - Placeholder text for the input
+ * @param size - Size of the input field
+ */
 
-export const SearchBar2: FC<ISearch> = ({
+export const SearchBar: FC<ISearch> = ({
   value,
   onChange,
   placeholder,
@@ -26,17 +19,16 @@ export const SearchBar2: FC<ISearch> = ({
 }) => (
   <InputGroup
     startElement={<LuSearch color="" className="dv-fg" />}
-    // endElement={<Kbd>⌘K</Kbd>}
     style={{ width: "95%" }}
   >
     <Input
       value={value}
       placeholder={placeholder}
       color={"dvForeground"}
-      border={"dvSeparatorBorder"}
       onChange={onChange}
       size={size}
-      // outline={"--dv-paneview-active-outline-color"}
+      borderColor={"dvSeparatorBorder"}
+      _focus={{ borderColor: "dvForeground" }}
     />
   </InputGroup>
 );
