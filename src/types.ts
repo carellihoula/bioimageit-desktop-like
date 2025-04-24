@@ -51,3 +51,32 @@ export interface ContextMenuItem {
   label: string;
   action: "delete" | "duplicate" | "cancel" | "edit";
 }
+
+export interface ISearch {
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+}
+
+export type NodeProperty = {
+  name: string;
+  shortname?: string;
+  help?: string;
+  required?: boolean;
+  default?: boolean | number | string;
+  type: string;
+  choices?: string[];
+  decimals?: number;
+};
+
+export type NodeMeta = {
+  name: string;
+  description: string;
+  inputs: NodeProperty[];
+  outputs: NodeProperty[];
+};
+
+export type PropertiesProps = {
+  node?: NodeMeta;
+};

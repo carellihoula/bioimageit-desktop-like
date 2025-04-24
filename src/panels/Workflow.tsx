@@ -139,33 +139,16 @@ export default function Workflow() {
     setCtx(null);
   }, [ctx, setNodes]);
 
-  const closeMenu = useCallback(() => {
-    setCtx(null);
-  }, []);
-
   const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
     if (action === "duplicate") {
       duplicateNode();
     } else if (action === "delete") {
       deleteNode();
-    } else if (action === "cancel") {
-      closeMenu();
     } else if (action === "edit") {
       alert("open code-server");
     }
     setCtx(null);
   };
-
-  // const actionsMap = {
-  //   delete: deleteNode,
-  //   duplicate: duplicateNode,
-  //   cancel: closeMenu,
-  // };
-
-  // const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
-  //   actionsMap[action]?.();
-  //   setCtx(null);
-  // };
 
   // global click to close menu
   useEffect(() => {
@@ -210,6 +193,7 @@ export default function Workflow() {
         onNodeContextMenu={onNodeContextMenu}
       >
         <Controls />
+
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
       </ReactFlow>
 

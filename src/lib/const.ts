@@ -38,5 +38,4 @@ export const contextMenu: ContextMenuItem[] = [
   { label: "Edit Node", action: "edit" },
   { label: "Duplicate Node", action: "duplicate" },
   { label: "Delete Node", action: "delete" },
-  { label: "Cancel", action: "cancel" },
 ];

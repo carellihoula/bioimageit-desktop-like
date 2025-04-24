@@ -1,7 +1,6 @@
 import { ReactFlowInstance, Node } from "@xyflow/react";
 import { useCallback, useEffect } from "react";
 
-// https://github.com/xyflow/xyflow/discussions/1020#discussioncomment-10990631
 export const useCopyPaste = (rfInstance: ReactFlowInstance | null) => {
   // Copy selected nodes to clipboard
   const onCopy = useCallback(
