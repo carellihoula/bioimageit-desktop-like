@@ -8,6 +8,10 @@ import {
   createListCollection,
 } from "@chakra-ui/react";
 
+/**
+ * Renders a field based on the NodeProperty type.
+ * Handles different input types like numbers, booleans, strings, and paths.
+ */
 export function renderField(prop: NodeProperty) {
   switch (prop.type) {
     case "int":
@@ -17,10 +21,9 @@ export function renderField(prop: NodeProperty) {
           defaultValue={String(prop.default)}
           width="full"
           size={"xs"}
-          colorPalette="gray"
         >
-          <NumberInput.Control />
-          <NumberInput.Input />
+          <NumberInput.Control borderColor="dvSeparatorBorder" />
+          <NumberInput.Input borderColor="dvSeparatorBorder" />
         </NumberInput.Root>
       );
     case "bool":
@@ -42,6 +45,7 @@ export function renderField(prop: NodeProperty) {
       return (
         <Input
           type="text"
+          borderColor="dvSeparatorBorder"
           size={"xs"}
           defaultValue={String(prop.default)}
           className="border p-1 w-full"
@@ -52,17 +56,23 @@ export function renderField(prop: NodeProperty) {
         <Flex align="center" gap={2} w="full">
           <Input
             type="text"
+            color={"dvForeground"}
             defaultValue={String(prop.default ?? "")}
+            borderColor="dvSeparatorBorder"
             placeholder="Path to file"
             flex="1"
             size="xs"
           />
           <Button
+            borderColor="dvSeparatorBorder"
             as="label"
             size="xs"
             cursor="pointer"
             variant="outline"
-            colorScheme="gray"
+            color={"dvForeground"}
+            _hover={{
+              bg: "dvHoverBg",
+            }}
           >
             Browse...
             <input

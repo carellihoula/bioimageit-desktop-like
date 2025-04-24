@@ -3,6 +3,10 @@ import { renderField } from "@/lib/renderField";
 import { NodeMeta, PropertiesProps } from "@/types";
 import { Input } from "@chakra-ui/react";
 
+/*
+ * @param node - The node metadata containing inputs, outputs and description
+ * @returns Array of accordion section objects
+ */
 export function Properties({ node }: PropertiesProps) {
   return (
     <div className="h-full w-full overflow-hidden">
@@ -19,7 +23,11 @@ export function Properties({ node }: PropertiesProps) {
                 >
                   {node &&
                     bodyReturn(node).map((item, index) => (
-                      <Accordion.Item key={index} value={item.value}>
+                      <Accordion.Item
+                        key={index}
+                        value={item.value}
+                        borderColor="dvSeparatorBorder"
+                      >
                         <Accordion.ItemTrigger>
                           <Span flex="1">{item.title}</Span>
                           <Accordion.ItemIndicator />
@@ -39,6 +47,13 @@ export function Properties({ node }: PropertiesProps) {
   );
 }
 
+/**
+ * Returns an array of objects containing the input, output, and info sections for a node
+ * Each object has a value (for accordion item identification), title, and body content
+ * The body content includes input fields, output fields, and node description
+ * @param node - The node metadata containing inputs, outputs and description
+ * @returns Array of accordion section objects
+ */
 const bodyReturn = (node: NodeMeta) => {
   return [
     {
@@ -65,6 +80,7 @@ const bodyReturn = (node: NodeMeta) => {
               <label className="block">{output.name}</label>
               <Input
                 size={"xs"}
+                borderColor="dvSeparatorBorder"
                 defaultValue={String(output.default ?? output.help)}
                 className=" w-full"
               />
@@ -78,7 +94,7 @@ const bodyReturn = (node: NodeMeta) => {
       title: "Infos",
       body: (
         <div className="info">
-          <p className="text-sm text-gray-500">{node.description}</p>
+          <p className="text-sm dv-fg">{node.description}</p>
         </div>
       ),
     },
