@@ -1,23 +1,20 @@
 import { NodeProperty } from "@/types";
+import { CustomSelectForProperties } from "../components/Properties/CustomSelectForProperties";
 import {
-  CustomSelectForProperties,
-  items,
-} from "../components/Properties/CustomSelectForProperties";
-import { Button, Input, NumberInput, Flex } from "@chakra-ui/react";
+  Button,
+  Input,
+  NumberInput,
+  Flex,
+  createListCollection,
+} from "@chakra-ui/react";
 
 export function renderField(prop: NodeProperty) {
   switch (prop.type) {
     case "int":
     case "float":
       return (
-        // <input
-        //   type="number"
-        //   defaultValue={prop.default}
-        //   step={prop.decimals ? Math.pow(10, -prop.decimals) : undefined}
-        //   className="border p-1 w-full"
-        // />
         <NumberInput.Root
-          defaultValue={prop.default}
+          defaultValue={String(prop.default)}
           width="full"
           size={"xs"}
           colorPalette="gray"
@@ -28,27 +25,25 @@ export function renderField(prop: NodeProperty) {
       );
     case "bool":
       return (
-        <input type="checkbox" defaultChecked={prop.default} className="ml-1" />
+        <input
+          type="checkbox"
+          defaultChecked={!!prop.default}
+          className="ml-1"
+        />
       );
 
     case "str":
       if (prop.choices) {
-        return (
-          //   <select defaultValue={prop.default} className="border p-1 w-full">
-          //     {prop.choices.map((choice) => (
-          //       <option key={choice} value={choice}>
-          //         {choice}
-          //       </option>
-          //     ))}
-          //   </select>
-          <CustomSelectForProperties items={items} />
-        );
+        const items = createListCollection({
+          items: prop.choices,
+        });
+        return <CustomSelectForProperties data={items} />;
       }
       return (
         <Input
           type="text"
           size={"xs"}
-          defaultValue={prop.default}
+          defaultValue={String(prop.default)}
           className="border p-1 w-full"
         />
       );
@@ -57,7 +52,7 @@ export function renderField(prop: NodeProperty) {
         <Flex align="center" gap={2} w="full">
           <Input
             type="text"
-            defaultValue={prop.default}
+            defaultValue={String(prop.default ?? "")}
             placeholder="Path to file"
             flex="1"
             size="xs"

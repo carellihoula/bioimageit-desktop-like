@@ -1,21 +1,16 @@
-import {
-  ListCollection,
-  Portal,
-  Select,
-  createListCollection,
-} from "@chakra-ui/react";
+import { ListCollection, Portal, Select } from "@chakra-ui/react";
 
 export const CustomSelectForProperties = ({
-  items,
+  data,
 }: {
-  items: ListCollection;
+  data: ListCollection;
 }) => {
   return (
-    <Select.Root collection={items} size="xs" width="full">
+    <Select.Root collection={data} size="xs" width="full">
       <Select.HiddenSelect />
       <Select.Control>
         <Select.Trigger>
-          <Select.ValueText placeholder={items.firstValue ?? ""} />
+          <Select.ValueText placeholder={data.firstValue ?? ""} />
         </Select.Trigger>
         <Select.IndicatorGroup>
           <Select.Indicator />
@@ -24,7 +19,7 @@ export const CustomSelectForProperties = ({
       <Portal>
         <Select.Positioner>
           <Select.Content>
-            {items.items.map((framework, index) => (
+            {data.items.map((framework, index) => (
               <Select.Item item={framework} key={index}>
                 {framework}
                 <Select.ItemIndicator />
@@ -36,7 +31,3 @@ export const CustomSelectForProperties = ({
     </Select.Root>
   );
 };
-
-export const items = createListCollection({
-  items: ["carel", "luco", "esther"],
-});

@@ -17,7 +17,7 @@ import { WorkflowManager } from "./panels/WorkflowManager";
 import { MainMenuBar } from "./components/common/MainMenuBar";
 import { dockviewThemes } from "./components/common/DockviewThemeSelector";
 import { LogsPanel } from "./panels/LogsPanel";
-import { mockNode } from "./mock/fakeProperties";
+// import { mockNode } from "./mock/fakeProperties";
 import { mockNodeCellpose } from "./mock/mockNodeCellpose";
 
 /**

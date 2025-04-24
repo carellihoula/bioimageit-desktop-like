@@ -65,7 +65,7 @@ const bodyReturn = (node: NodeMeta) => {
               <label className="block">{output.name}</label>
               <Input
                 size={"xs"}
-                defaultValue={output.default ?? output.help}
+                defaultValue={String(output.default ?? output.help)}
                 className=" w-full"
               />
             </div>
@@ -84,51 +84,3 @@ const bodyReturn = (node: NodeMeta) => {
     },
   ];
 };
-
-// export function Properties({ node }: PropertiesProps) {
-//   // const [searchValue, setSearchValue] = useState("");
-
-//   // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//   //   setSearchValue(e.target.value);
-//   // };
-
-//   if (!node) {
-//     return (
-//       <div className="p-4 text-center text-gray-500">No node selected</div>
-//     );
-//   }
-
-//   return (
-//     <div className="h-full w-full overflow-hidden">
-//       {/* Dockview container */}
-//       <div className="p-4 w-full space-y-4 h-full max-h-full overflow-y-auto">
-//         <div>
-//           <h3 className="font-semibold mb-2">Inputs</h3>
-//           {node.inputs.map((input) => (
-//             <div key={input.name} className="mb-3 flex gap-2 items-center">
-//               <label className="block font-medium">{input.name}</label>
-//               {renderField(input)}
-//             </div>
-//           ))}
-//         </div>
-//         <div>
-//           <h3 className="font-semibold mb-2">Outputs</h3>
-//           {node.outputs.map((output) => (
-//             <div key={output.name} className="mb-2 flex gap-2 items-center">
-//               <label className="block font-medium">{output.name}</label>
-//               <Input
-//                 size={"xs"}
-//                 defaultValue={output.default ?? output.help}
-//                 className=" w-full"
-//               />
-//             </div>
-//           ))}
-//         </div>
-//         <div className="info">
-//           <h3 className="font-semibold mb-2">Infos</h3>
-//           <p className="text-sm text-gray-500">{node.description}</p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }

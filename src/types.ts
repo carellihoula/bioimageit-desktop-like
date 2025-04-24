@@ -64,7 +64,7 @@ export type NodeProperty = {
   shortname?: string;
   help?: string;
   required?: boolean;
-  default?: any;
+  default?: boolean | number | string;
   type: string;
   choices?: string[];
   decimals?: number;
