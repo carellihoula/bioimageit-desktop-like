@@ -17,6 +17,8 @@ import { WorkflowManager } from "./panels/WorkflowManager";
 import { MainMenuBar } from "./components/common/MainMenuBar";
 import { dockviewThemes } from "./components/common/DockviewThemeSelector";
 import { LogsPanel } from "./panels/LogsPanel";
+// import { mockNode } from "./mock/fakeProperties";
+import { mockNodeCellpose } from "./mock/mockNodeCellpose";
 
 /**
  * Components to be used in the Dockview panels.
@@ -30,7 +32,8 @@ const components = {
       case "tools":
         return <Tools />;
       case "properties":
-        return <Properties />;
+        //mockNode, mockNodeCellpose
+        return <Properties node={mockNodeCellpose} />;
       case "workflow":
         return <Workflow />;
       case "webtabletool":
