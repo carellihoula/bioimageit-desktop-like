@@ -73,6 +73,24 @@ A modern, desktop-inspired interface for BioImageIT, built with React, Tailwind 
 - **Tailwind Config**: Customize colors and theme in `tailwind.config.js`.
 - **Dockview Theme**: Toggle between light (`dockview-theme-light`) and dark (`dockview-theme-dark`) by changing the CSS class on the root `<DockviewReact>` component.
 
+## 📸 Screenshots
+
+### 🧪 Input + Logs Panel
+
+![Input Logs Panel](public/interface-input-logs.png)
+
+### 📋 Output + Info Panel
+
+![Output Info Panel](public/interface-output-info.png)
+
+### 🪵 Logs Panel
+
+![Logs Panel](public/interface-logs.png)
+
+### 📊 WebTable + Execution Panel
+
+![WebTable + Execution Panel](public/interface-webtable-execution.png)
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
