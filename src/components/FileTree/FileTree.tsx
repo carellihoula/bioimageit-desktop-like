@@ -1,19 +1,34 @@
 import Box from "@mui/material/Box";
 import { RichTreeView } from "@mui/x-tree-view/RichTreeView";
-import { MUI_X_PRODUCTS } from "../../mock/fileTree";
-import { ITreeItem } from "@/types";
-
+import { ITreeItem, ToolInfo } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { buildTreeFromTools } from "./buildTreeFromTools";
 /**
  * FileTree component that displays a tree view of files and folders
  * with search functionality
  */
 export default function FileTree({ search }: { search: string }) {
-  const filteredItems = filterTree(MUI_X_PRODUCTS, search);
+  const { isPending, error, data } = useQuery<ITreeItem[]>({
+    queryKey: ["treeData"],
+    queryFn: fetchTools,
+  });
+
+  if (isPending) return <>Loading...</>;
+  if (error) return <>An error has occurred: {error.message}</>;
+
+  const filteredItems = filterTree(data ?? [], search);
+
   return (
     <Box sx={{ minHeight: 352, minWidth: 250, color: "dv-fg" }}>
-      <RichTreeView items={filteredItems} />
+      <RichTreeView items={filteredItems} getItemId={(item) => item.id} />
     </Box>
   );
+}
+
+async function fetchTools(): Promise<ITreeItem[]> {
+  const response = await fetch("http://localhost:8000/api/tools");
+  const data: ToolInfo[] = await response.json();
+  return buildTreeFromTools(data);
 }
 
 /**
