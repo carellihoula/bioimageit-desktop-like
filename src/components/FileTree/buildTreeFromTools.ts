@@ -1,3 +1,4 @@
+import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
 import { ToolInfo, ITreeItem, InternalNode } from "@/types";
 
 /**
@@ -36,9 +37,10 @@ export function buildTreeFromTools(tools: ToolInfo[]): ITreeItem[] {
         const id = path ? `${path}/${key}` : key;
 
         if (value.__tool) {
+          const label = transformLabelFromPath(value.__tool.path) ?? key;
           return {
             id,
-            label: key,
+            label,
             tool: value.__tool,
           };
         }
