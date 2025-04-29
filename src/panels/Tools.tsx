@@ -13,11 +13,10 @@ export function Tools() {
   const [searchTerm, setSearchTerm] = useState("");
   return (
     <div className="flex flex-col gap-2 h-full">
-      <div className=" flex justify-center items-center mt-4 w-full">
+      <div className=" flex justify-center items-center mt-2 w-full">
         <Button
           style={{
             width: "95%",
-            marginTop: "1rem",
             borderRadius: "4px",
           }}
           bg="dvBackground"

@@ -66,22 +66,32 @@ export type NodeProperty = {
   decimals?: number;
 };
 
+export interface ToolDependencies {
+  [key: string]: string[]; // each manager (conda, pip, apt, etc.) has a list of packages
+}
 // Type definition for node metadata
-export type NodeMeta = {
+export interface ToolInfo {
   name: string;
-  description: string;
-  inputs: NodeProperty[];
-  outputs: NodeProperty[];
-};
-
-// Props interface for properties component
-export type PropertiesProps = {
-  node?: NodeMeta;
+  description?: string;
+  categories?: string[];
+  environment?: string;
+  dependencies?: ToolDependencies;
+  inputs?: NodeProperty[];
+  outputs?: NodeProperty[];
+  test?: string[];
+  path?: string;
+  module_path?: string;
+}
+// Type definition for internal node structure
+export type InternalNode = {
+  __tool?: ToolInfo;
+  __children?: Record<string, InternalNode>;
 };
 
 // Type definition for tree item structure
-export type ITreeItem = {
+export interface ITreeItem {
   id: string;
   label: string;
   children?: ITreeItem[];
-};
+  tool?: ToolInfo;
+}

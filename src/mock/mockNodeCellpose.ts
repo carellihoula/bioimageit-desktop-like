@@ -1,6 +1,6 @@
-import { NodeMeta } from "@/types";
+import { ToolInfo } from "@/types";
 
-export const mockNodeCellpose: NodeMeta = {
+export const mockNodeCellpose: ToolInfo = {
   name: "Mock Cellpose",
   description: "Segment cells using a mock version of Cellpose for UI testing.",
   inputs: [
