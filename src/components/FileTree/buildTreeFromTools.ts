@@ -1,5 +1,10 @@
 import { ToolInfo, ITreeItem, InternalNode } from "@/types";
 
+/**
+ * Builds a tree structure from an array of tools
+ * @param tools - Array of ToolInfo objects
+ * @returns Array of tree items
+ */
 export function buildTreeFromTools(tools: ToolInfo[]): ITreeItem[] {
   const root: Record<string, InternalNode> = {};
 

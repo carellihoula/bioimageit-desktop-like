@@ -3,6 +3,7 @@ import { RichTreeView } from "@mui/x-tree-view/RichTreeView";
 import { ITreeItem, ToolInfo } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { buildTreeFromTools } from "./buildTreeFromTools";
+import { Spinner } from "@chakra-ui/react";
 /**
  * FileTree component that displays a tree view of files and folders
  * with search functionality
@@ -13,7 +14,12 @@ export default function FileTree({ search }: { search: string }) {
     queryFn: fetchTools,
   });
 
-  if (isPending) return <>Loading...</>;
+  if (isPending)
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Spinner size="lg" />
+      </div>
+    );
   if (error) return <>An error has occurred: {error.message}</>;
 
   const filteredItems = filterTree(data ?? [], search);
@@ -24,6 +30,11 @@ export default function FileTree({ search }: { search: string }) {
     </Box>
   );
 }
+
+/**
+ * Fetches tool data from the API and builds a tree structure
+ * @returns Promise that resolves to an array of tree items
+ */
 
 async function fetchTools(): Promise<ITreeItem[]> {
   const response = await fetch("http://localhost:8000/api/tools");
