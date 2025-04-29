@@ -1,5 +1,5 @@
 import { SearchBar } from "@/components/common/SearchBar";
-import FileTree from "../components/FileTree/FileTree";
+import FileTree from "@/components/FileTree/FileTree";
 import { Button } from "@chakra-ui/react";
 import { useState } from "react";
 

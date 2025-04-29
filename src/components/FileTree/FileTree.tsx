@@ -4,6 +4,7 @@ import { ITreeItem, ToolInfo } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { buildTreeFromTools } from "./buildTreeFromTools";
 import { Spinner } from "@chakra-ui/react";
+
 /**
  * FileTree component that displays a tree view of files and folders
  * with search functionality
@@ -20,7 +21,12 @@ export default function FileTree({ search }: { search: string }) {
         <Spinner size="lg" />
       </div>
     );
-  if (error) return <>An error has occurred: {error.message}</>;
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-full">
+        An error has occurred: {error.message}
+      </div>
+    );
 
   const filteredItems = filterTree(data ?? [], search);
 
