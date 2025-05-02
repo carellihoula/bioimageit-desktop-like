@@ -27,6 +27,7 @@ import { ContextMenu } from "@/components/Workflow-ui/ContextMenu";
 import { initialNodes } from "@/mock/initialNodesAndEdges";
 import { ToolInfo } from "@/types";
 import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
+import { useSelectedNode } from "@/store/useSelectedNode";
 
 // keys in localStorage
 const STORAGE_NODES = "workflow-nodes";
@@ -43,6 +44,7 @@ const initialEdges: Edge[] = [];
 export default function Workflow() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
+  const { setSelectedNode } = useSelectedNode();
 
   // load saved or fallback
   const savedNodesJson = localStorage.getItem(STORAGE_NODES);
@@ -184,7 +186,7 @@ export default function Workflow() {
       if (!data || !reactFlowBounds || !rfInstance) return;
 
       const tool = JSON.parse(data) as ToolInfo;
-      console.log("tool", tool);
+      // console.log("tool", tool);
       const { x: viewportX, y: viewportY, zoom } = rfInstance.getViewport();
       const position = {
         x: (event.clientX - reactFlowBounds.left - viewportX) / zoom,
@@ -206,7 +208,14 @@ export default function Workflow() {
     },
     [rfInstance, nodes, edges, setNodes, push]
   );
-
+  const onNodeClick = useCallback(
+    (node: Node) => {
+      if (node.data?.tool) {
+        setSelectedNode(node.data.tool as ToolInfo); // ToolInfo
+      }
+    },
+    [setSelectedNode]
+  );
   return (
     <div
       ref={wrapperRef}
@@ -226,6 +235,7 @@ export default function Workflow() {
         onNodeDragStart={() => setCtx(null)}
         onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}
+        onNodeClick={(_, node) => onNodeClick(node)}
       >
         <Controls />
 

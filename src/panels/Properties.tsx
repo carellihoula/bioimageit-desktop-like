@@ -2,16 +2,19 @@ import { Accordion, For, Span, Stack } from "@chakra-ui/react";
 import { renderField } from "@/lib/renderField";
 import { ToolInfo } from "@/types";
 import { Input } from "@chakra-ui/react";
+import { useSelectedNode } from "@/store/useSelectedNode";
 
 /*
  * @param node - The node metadata containing inputs, outputs and description
  * @returns Array of accordion section objects
  */
-export function Properties({ node }: { node: ToolInfo }) {
+export function Properties() {
+  const { selectedNode } = useSelectedNode();
+
   return (
     <div className="h-full w-full overflow-hidden">
       <div className="p-4 w-full space-y-4 h-full max-h-full overflow-y-auto dv-fg">
-        <Stack gap="8" width={"full"}>
+        <Stack gap="8" width={"full"} className="">
           <For each={["outline"]}>
             {(variant) => (
               <Stack gap="2" key={variant}>
@@ -21,8 +24,8 @@ export function Properties({ node }: { node: ToolInfo }) {
                   defaultValue={["a"]}
                   multiple
                 >
-                  {node &&
-                    bodyReturn(node).map((item, index) => (
+                  {selectedNode &&
+                    bodyReturn(selectedNode).map((item, index) => (
                       <Accordion.Item
                         key={index}
                         value={item.value}
