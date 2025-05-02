@@ -184,7 +184,7 @@ export default function Workflow() {
       if (!data || !reactFlowBounds || !rfInstance) return;
 
       const tool = JSON.parse(data) as ToolInfo;
-      console.log("tool", tool);
+      // console.log("tool", tool);
       const { x: viewportX, y: viewportY, zoom } = rfInstance.getViewport();
       const position = {
         x: (event.clientX - reactFlowBounds.left - viewportX) / zoom,
