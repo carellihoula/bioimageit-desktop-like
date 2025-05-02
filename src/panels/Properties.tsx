@@ -2,14 +2,22 @@ import { Accordion, For, Span, Stack } from "@chakra-ui/react";
 import { renderField } from "@/lib/renderField";
 import { ToolInfo } from "@/types";
 import { Input } from "@chakra-ui/react";
-import { useSelectedNode } from "@/store/useSelectedNode";
+import { useStore } from "@xyflow/react";
 
 /*
  * @param node - The node metadata containing inputs, outputs and description
  * @returns Array of accordion section objects
  */
 export function Properties() {
-  const { selectedNode } = useSelectedNode();
+  const selectedNode = useStore((state) =>
+    state.nodes.find((node) => node.selected)
+  );
+  if (!selectedNode)
+    return (
+      <div className="p-4 text-gray-500 flex items-center justify-center h-full">
+        No nodes selected
+      </div>
+    );
 
   return (
     <div className="h-full w-full overflow-hidden">
@@ -25,21 +33,23 @@ export function Properties() {
                   multiple
                 >
                   {selectedNode &&
-                    bodyReturn(selectedNode).map((item, index) => (
-                      <Accordion.Item
-                        key={index}
-                        value={item.value}
-                        borderColor="dvSeparatorBorder"
-                      >
-                        <Accordion.ItemTrigger>
-                          <Span flex="1">{item.title}</Span>
-                          <Accordion.ItemIndicator />
-                        </Accordion.ItemTrigger>
-                        <Accordion.ItemContent>
-                          <Accordion.ItemBody>{item.body}</Accordion.ItemBody>
-                        </Accordion.ItemContent>
-                      </Accordion.Item>
-                    ))}
+                    bodyReturn(selectedNode.data.tool as ToolInfo).map(
+                      (item, index) => (
+                        <Accordion.Item
+                          key={index}
+                          value={item.value}
+                          borderColor="dvSeparatorBorder"
+                        >
+                          <Accordion.ItemTrigger>
+                            <Span flex="1">{item.title}</Span>
+                            <Accordion.ItemIndicator />
+                          </Accordion.ItemTrigger>
+                          <Accordion.ItemContent>
+                            <Accordion.ItemBody>{item.body}</Accordion.ItemBody>
+                          </Accordion.ItemContent>
+                        </Accordion.Item>
+                      )
+                    )}
                 </Accordion.Root>
               </Stack>
             )}
