@@ -32,7 +32,7 @@ export function Properties() {
                   defaultValue={["a"]}
                   multiple
                 >
-                  {selectedNode &&
+                  {(selectedNode.data.tool as ToolInfo) &&
                     bodyReturn(selectedNode.data.tool as ToolInfo).map(
                       (item, index) => (
                         <Accordion.Item

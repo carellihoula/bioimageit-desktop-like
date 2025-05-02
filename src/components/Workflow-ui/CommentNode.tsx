@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { Handle, Position, Node, NodeProps, useReactFlow } from "@xyflow/react";
 
-export type CommentData = { comment?: string };
+export type CommentData = { type?: "comment"; comment?: string };
 type CommentNodeType = Node<CommentData, string>;
 
 export function CommentNode({

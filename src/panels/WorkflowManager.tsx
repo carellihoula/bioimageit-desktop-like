@@ -1,3 +1,4 @@
+import { useExportFlow } from "@/hooks/workflow-ui/useExportFlow";
 import { Button, VStack, Box, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -17,6 +18,7 @@ const workflows = [
  */
 export const WorkflowManager = () => {
   const [selected, setSelected] = useState<string | null>(null);
+  const exportFlow = useExportFlow("workflow.json");
 
   return (
     <VStack
@@ -104,6 +106,7 @@ export const WorkflowManager = () => {
         Duplicate workflow
       </Button>
       <Button
+        onClick={exportFlow}
         variant="outline"
         size="sm"
         bg="dvBackground"
