@@ -75,13 +75,6 @@ export default function FileTree({ search }: { search: string }) {
           },
         }}
       />
-
-  const filteredItems = filterTree(data ?? [], search);
-
-  return (
-    <Box sx={{ minHeight: 352, minWidth: 250, color: "dv-fg" }}>
-      <RichTreeView items={filteredItems} getItemId={(item) => item.id} />
-
     </Box>
   );
 }
