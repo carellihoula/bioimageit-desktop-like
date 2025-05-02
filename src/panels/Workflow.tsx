@@ -25,6 +25,8 @@ import { contextMenu } from "@/lib/const";
 // import { Item } from "@radix-ui/react-menubar";
 import { ContextMenu } from "@/components/Workflow-ui/ContextMenu";
 import { initialNodes } from "@/mock/initialNodesAndEdges";
+import { ToolInfo } from "@/types";
+import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
 
 // keys in localStorage
 const STORAGE_NODES = "workflow-nodes";
@@ -98,7 +100,7 @@ export default function Workflow() {
     (params: Connection) => {
       const nextEdges = addEdge(params, edges);
       setEdges(nextEdges);
-      push(nodes, nextEdges); // 👈 push après la MAJ effective
+      push(nodes, nextEdges);
     },
     [edges, setEdges, push, nodes]
   );
@@ -174,11 +176,44 @@ export default function Workflow() {
     return () => window.removeEventListener("keydown", handler);
   }, [undo, redo, setNodes, setEdges]);
 
+  const handleDrop = useCallback(
+    (event: React.DragEvent) => {
+      event.preventDefault();
+      const reactFlowBounds = wrapperRef.current?.getBoundingClientRect();
+      const data = event.dataTransfer.getData("application/json");
+      if (!data || !reactFlowBounds || !rfInstance) return;
+
+      const tool = JSON.parse(data) as ToolInfo;
+      console.log("tool", tool);
+      const { x: viewportX, y: viewportY, zoom } = rfInstance.getViewport();
+      const position = {
+        x: (event.clientX - reactFlowBounds.left - viewportX) / zoom,
+        y: (event.clientY - reactFlowBounds.top - viewportY) / zoom,
+      };
+
+      const newNode: Node = {
+        id: `${tool.name}-${Date.now()}`,
+        type: "io",
+        position,
+        data: {
+          label: transformLabelFromPath(tool.module_path),
+          tool,
+        },
+      };
+
+      setNodes((nds) => [...nds, newNode]);
+      push([...nodes, newNode], edges);
+    },
+    [rfInstance, nodes, edges, setNodes, push]
+  );
+
   return (
     <div
       ref={wrapperRef}
       style={{ width: "100%", height: "100%" }}
       tabIndex={0}
+      onDrop={handleDrop}
+      onDragOver={(e) => e.preventDefault()}
     >
       <ReactFlow
         nodes={nodes}
