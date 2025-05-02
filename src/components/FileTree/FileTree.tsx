@@ -25,7 +25,7 @@ export default function FileTree({ search }: { search: string }) {
   // This map allows quick access to the full item data using its ID
   const itemsById = React.useMemo(() => {
     const map = new Map<string, ITreeItem>();
-    // Important: Flatten the *filtered* items because RichTreeView renders based on them
+    // Flatten the *filtered* items because RichTreeView renders based on them
     const flatItems = flattenTreeItems(filteredItems);
     flatItems.forEach((item) => {
       // Use the same logic as getItemId to generate the key
