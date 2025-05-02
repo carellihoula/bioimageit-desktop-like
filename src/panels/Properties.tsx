@@ -1,13 +1,13 @@
 import { Accordion, For, Span, Stack } from "@chakra-ui/react";
 import { renderField } from "@/lib/renderField";
-import { NodeMeta, PropertiesProps } from "@/types";
+import { ToolInfo } from "@/types";
 import { Input } from "@chakra-ui/react";
 
 /*
  * @param node - The node metadata containing inputs, outputs and description
  * @returns Array of accordion section objects
  */
-export function Properties({ node }: PropertiesProps) {
+export function Properties({ node }: { node: ToolInfo }) {
   return (
     <div className="h-full w-full overflow-hidden">
       <div className="p-4 w-full space-y-4 h-full max-h-full overflow-y-auto dv-fg">
@@ -54,14 +54,14 @@ export function Properties({ node }: PropertiesProps) {
  * @param node - The node metadata containing inputs, outputs and description
  * @returns Array of accordion section objects
  */
-const bodyReturn = (node: NodeMeta) => {
+const bodyReturn = (node: ToolInfo) => {
   return [
     {
       value: "a",
       title: "Inputs",
       body: (
         <div>
-          {node.inputs.map((input) => (
+          {node.inputs?.map((input) => (
             <div key={input.name} className="mb-3 flex gap-2 items-center">
               <label className="block">{input.name}</label>
               {renderField(input)}
@@ -75,7 +75,7 @@ const bodyReturn = (node: NodeMeta) => {
       title: "Outputs",
       body: (
         <div>
-          {node.outputs.map((output) => (
+          {node.outputs?.map((output) => (
             <div key={output.name} className="mb-2 flex gap-2 items-center">
               <label className="block">{output.name}</label>
               <Input
