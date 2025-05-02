@@ -4,8 +4,11 @@ import { ITreeItem, ToolInfo } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import { buildTreeFromTools } from "./buildTreeFromTools";
 import { Spinner } from "@chakra-ui/react";
+
 import { CustomTreeItem } from "./CustomTreeItem";
 import React from "react";
+
+
 
 /**
  * FileTree component that displays a tree view of files and folders
@@ -16,6 +19,7 @@ export default function FileTree({ search }: { search: string }) {
     queryKey: ["treeData"],
     queryFn: fetchTools,
   });
+
 
   // --- Memoize the filtered items ---
   const filteredItems = React.useMemo(() => {
@@ -56,6 +60,7 @@ export default function FileTree({ search }: { search: string }) {
       </div>
     );
 
+
   return (
     <Box sx={{ minHeight: 352, minWidth: 250, color: "dv-fg" }}>
       <RichTreeView
@@ -70,6 +75,13 @@ export default function FileTree({ search }: { search: string }) {
           },
         }}
       />
+
+  const filteredItems = filterTree(data ?? [], search);
+
+  return (
+    <Box sx={{ minHeight: 352, minWidth: 250, color: "dv-fg" }}>
+      <RichTreeView items={filteredItems} getItemId={(item) => item.id} />
+
     </Box>
   );
 }
