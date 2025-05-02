@@ -40,8 +40,6 @@ export function buildTreeFromTools(tools: ToolInfo[]): ITreeItem[] {
 
           const label = transformLabelFromPath(value.__tool.module_path) ?? key;
 
-          const label = transformLabelFromPath(value.__tool.path) ?? key;
-
           return {
             id,
             label,
