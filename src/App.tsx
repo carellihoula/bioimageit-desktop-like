@@ -4,8 +4,15 @@ import {
   DockviewReadyEvent,
   IDockviewPanelProps,
   DockviewApi,
+  IDockviewPanelHeaderProps,
+  IDockviewHeaderActionsProps,
 } from "dockview";
 import "dockview/dist/styles/dockview.css";
+import {
+  VscChromeClose,
+  VscChromeMaximize,
+  VscChromeMinimize,
+} from "react-icons/vsc";
 
 import { Tools } from "./panels/Tools";
 import { Properties } from "./panels/Properties";
@@ -24,6 +31,86 @@ import { LogsPanel } from "./panels/LogsPanel";
  * The components are imported from their respective files.
  * The components are used in the Dockview API to create panels.
  */
+interface CustomParams {
+  myValue: string;
+}
+
+export const RightComponent = (props: IDockviewHeaderActionsProps) => {
+  return (
+    <div className="flex items-center space-x-1 pr-2 h-full custom-window-controls">
+      {/* Bouton Réduire Fenêtre */}
+      {/* <button
+        // onClick={handleMinimizeWindow}
+        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded"
+        aria-label="Minimize Window"
+        title="Minimize Window"
+      >
+        
+        <VscChromeMinimize />
+      </button> */}
+
+      <button
+        // onClick={handleMaximizeRestoreWindow}
+        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded"
+        aria-label={"Maximize/Restore Window"} // L'état exact dépendrait de l'API de l'environnement
+        title={"Maximize/Restore Window"}
+      >
+        <VscChromeMaximize />
+        {/* <VscChromeRestore /> */}
+      </button>
+
+      <button
+        // onClick={handleCloseWindow}
+        className="p-1 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 rounded"
+        aria-label="Close Window"
+        title="Close Window"
+      >
+        <VscChromeClose />
+      </button>
+    </div>
+  );
+};
+const tabComponents = {
+  default: (props: IDockviewPanelHeaderProps<CustomParams>) => {
+    // Function to handle closing the panel
+    const handleClose = (event: React.MouseEvent) => {
+      event.stopPropagation(); // Prevent tab selection/drag
+      props.api.close(); // Use the panel API to close
+    };
+
+    // const handleMaximize = (event: React.MouseEvent) => {
+    //   event.stopPropagation();
+    //   if (props.api.isMaximized) {
+    //      props.api.exitMaximize();
+    //   } else {
+    //      props.api.maximize();
+    //   }
+    // }
+
+    return (
+      <div className="flex justify-between w-full h-full items-center px-2">
+        {/* Left side: Title */}
+        <div>
+          {/* Display custom param if available, otherwise default title */}
+          {props.params?.myValue ?? props.api.title}
+        </div>
+
+        <div className="flex items-center space-x-1">
+          {/* <button onClick={handleMaximize} className="panel-control-button">...</button> */}
+
+          {/* Close Button */}
+          <button
+            onClick={handleClose}
+            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded" // Add some basic styling
+            aria-label="Close Panel"
+          >
+            <VscChromeClose />
+          </button>
+        </div>
+      </div>
+    );
+  },
+};
 const components = {
   default: (props: IDockviewPanelProps) => {
     switch (props.api.id) {
@@ -139,6 +226,10 @@ const App: React.FC = () => {
       id: "logstool",
       title: "Logs Tool",
       component: "default",
+      tabComponent: "default",
+      params: {
+        myValue: "Logs Tool",
+      },
     });
 
     //webTablePanel is active by default
@@ -170,7 +261,9 @@ const App: React.FC = () => {
       <DockviewReact
         onReady={onReady}
         components={components}
+        tabComponents={tabComponents}
         theme={theme}
+        rightHeaderActionsComponent={RightComponent}
         className={theme.className}
       />
     </div>
