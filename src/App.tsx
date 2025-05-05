@@ -19,6 +19,7 @@ import { dockviewThemes } from "./components/common/DockviewThemeSelector";
 import { LogsPanel } from "./panels/LogsPanel";
 import { DockMaximizeCloseControls } from "./components/common/DockMaximizeCloseControls";
 // import DraggableDialog from "./components/common/DraggableDialog";
+// import { Button } from "@chakra-ui/react";
 // import { tabComponents } from "./components/common/tabcomponents";
 
 /**
@@ -58,6 +59,10 @@ const App: React.FC = () => {
   // Panel columnHook to track window width
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [theme, setTheme] = useState(dockviewThemes[0].theme);
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // const openDialog = () => setIsDialogOpen(true);
+  // const closeDialog = () => setIsDialogOpen(false);
 
   // Each time the `theme` changes, we apply its className to <html>.
   // Each time the theme changes, we (re)apply the class to html
@@ -175,6 +180,20 @@ const App: React.FC = () => {
         // className={theme.className}
       />
       {/* <DraggableDialog children={<div className="p-4">Hello Friends</div>} /> */}
+      {/* <Button onClick={openDialog}>Open Floating dialog</Button>
+
+      <DraggableDialog isOpen={isDialogOpen} onClose={closeDialog}>
+        <h2>Dialog content</h2>
+        <p>This is a draggable and resizable dialog.</p>
+        <Button
+          onClick={closeDialog}
+          variant="outline"
+          size="sm"
+          className="mt-4"
+        >
+          Close from inside
+        </Button>
+      </DraggableDialog> */}
       <DockviewReact
         onReady={onReady}
         components={components}

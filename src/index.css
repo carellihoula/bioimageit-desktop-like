@@ -9,6 +9,10 @@ body {
   min-height: 100vh;
 }
 
+:root {
+  --dialog-box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 :focus,
 :focus-visible,
 *[data-focus] {
@@ -51,5 +55,5 @@ body {
   border: var(--dv-activegroup-visiblepanel-tab-color);
 }
 .dv-shadow {
-  box-shadow: var(--dv-floating-box-shadow);
+  box-shadow: var(--dialog-box-shadow);
 }
