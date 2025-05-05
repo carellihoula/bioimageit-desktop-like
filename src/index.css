@@ -40,3 +40,16 @@ body {
 .dv-tab-bg {
   background-color: var(--dv-activegroup-visiblepanel-tab-background-color);
 }
+.dv-height-tab {
+  height: var(--dv-tabs-and-actions-container-height);
+}
+.dv-bg-tab-container {
+  background-color: var(--dv-tabs-and-actions-container-background-color);
+}
+
+.dv-divider-tab-color {
+  border: var(--dv-activegroup-visiblepanel-tab-color);
+}
+.dv-shadow {
+  box-shadow: var(--dv-floating-box-shadow);
+}

@@ -18,6 +18,7 @@ import { MainMenuBar } from "./components/common/MainMenuBar";
 import { dockviewThemes } from "./components/common/DockviewThemeSelector";
 import { LogsPanel } from "./panels/LogsPanel";
 import { DockMaximizeCloseControls } from "./components/common/DockMaximizeCloseControls";
+// import DraggableDialog from "./components/common/DraggableDialog";
 // import { tabComponents } from "./components/common/tabcomponents";
 
 /**
@@ -173,6 +174,7 @@ const App: React.FC = () => {
         theme={theme}
         // className={theme.className}
       />
+      {/* <DraggableDialog children={<div className="p-4">Hello Friends</div>} /> */}
       <DockviewReact
         onReady={onReady}
         components={components}
