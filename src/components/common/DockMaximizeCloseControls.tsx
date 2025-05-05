@@ -1,6 +1,11 @@
 import { IDockviewHeaderActionsProps } from "dockview";
 import React from "react";
-import { VscChromeClose, VscChromeMaximize } from "react-icons/vsc";
+import {
+  VscChromeClose,
+  // VscChromeMaximize,
+  // VscChromeRestore,
+} from "react-icons/vsc";
+import { AiOutlineExpand } from "react-icons/ai";
 
 const DockMaximizeCloseControlsBase = (props: IDockviewHeaderActionsProps) => {
   const handleMaximizeRestoreWindow = () => {
@@ -22,7 +27,9 @@ const DockMaximizeCloseControlsBase = (props: IDockviewHeaderActionsProps) => {
         aria-label={"Maximize/Restore Window"}
         title={"Maximize/Restore Window"}
       >
-        <VscChromeMaximize />
+        {/* <VscChromeMaximize /> */}
+        {/* {props.api.isMaximized() ? <VscChromeRestore /> : <VscChromeMaximize />} */}
+        <AiOutlineExpand />
       </button>
 
       <button
