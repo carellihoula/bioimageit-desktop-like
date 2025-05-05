@@ -1,0 +1,41 @@
+import { IDockviewHeaderActionsProps } from "dockview";
+import React from "react";
+import { VscChromeClose, VscChromeMaximize } from "react-icons/vsc";
+
+const DockMaximizeCloseControlsBase = (props: IDockviewHeaderActionsProps) => {
+  const handleMaximizeRestoreWindow = () => {
+    if (props.api.isMaximized()) {
+      props.api.exitMaximized();
+    } else {
+      props.api.maximize();
+    }
+  };
+  const handleCloseWindow = () => {
+    props.api.close();
+  };
+
+  return (
+    <div className="flex items-center space-x-1 pr-2 h-full custom-window-controls">
+      <button
+        onClick={handleMaximizeRestoreWindow}
+        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded"
+        aria-label={"Maximize/Restore Window"}
+        title={"Maximize/Restore Window"}
+      >
+        <VscChromeMaximize />
+      </button>
+
+      <button
+        onClick={handleCloseWindow}
+        className="p-1 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 rounded"
+        aria-label="Close Window"
+        title="Close Window"
+      >
+        <VscChromeClose />
+      </button>
+    </div>
+  );
+};
+export const DockMaximizeCloseControls = React.memo(
+  DockMaximizeCloseControlsBase
+);
