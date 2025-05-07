@@ -67,14 +67,6 @@ export const WorkflowManager = () => {
         bg="dvBackground"
         borderRadius="md"
       >
-        {isPending && (
-          <Text
-            color="dv-fg"
-            className="flex items-center justify-center h-full"
-          >
-            <Spinner size="lg" />
-          </Text>
-        )}
         {isPending ? (
           <Text
             color="dv-fg"
