@@ -17,6 +17,12 @@ import { WorkflowManager } from "./panels/WorkflowManager";
 import { MainMenuBar } from "./components/common/MainMenuBar";
 import { dockviewThemes } from "./components/common/DockviewThemeSelector";
 import { LogsPanel } from "./panels/LogsPanel";
+import { DockMaximizeCloseControls } from "./components/common/DockMaximizeCloseControls";
+import MainDialogContent from "./components/dialogs/MainDialogContent";
+
+// import DraggableDialog from "./components/common/DraggableDialog";
+// import { Button } from "@chakra-ui/react";
+// import { tabComponents } from "./components/common/tabcomponents";
 
 /**
  * Components to be used in the Dockview panels.
@@ -139,6 +145,10 @@ const App: React.FC = () => {
       id: "logstool",
       title: "Logs Tool",
       component: "default",
+      // tabComponent: "default",
+      // params: {
+      //   myValue: "Logs Tool",
+      // },
     });
 
     //webTablePanel is active by default
@@ -170,9 +180,12 @@ const App: React.FC = () => {
       <DockviewReact
         onReady={onReady}
         components={components}
+        // tabComponents={tabComponents}
         theme={theme}
+        rightHeaderActionsComponent={DockMaximizeCloseControls}
         className={theme.className}
       />
+      <MainDialogContent />
     </div>
   );
 };
