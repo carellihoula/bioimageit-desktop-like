@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Input, Button, VStack, Flex } from "@chakra-ui/react";
+import { useSocket } from "@/context/SocketContext";
 
 export const CreateWorkflowDialog = ({
   onCancel,
@@ -9,7 +10,20 @@ export const CreateWorkflowDialog = ({
   onCancel: () => void;
 }) => {
   const [name, setName] = useState("");
+  const { sendMessage } = useSocket();
 
+  const handleFileExplorer = () => {
+    const message = {
+      topic: "open_explorer",
+      action: "publish",
+      message: "open file explorer",
+    };
+
+    // console.log("Sending message:", message);
+
+    sendMessage(JSON.stringify(message));
+    console.log("Sending message:", message);
+  };
   return (
     <VStack align="stretch">
       {/* <Input
@@ -28,6 +42,7 @@ export const CreateWorkflowDialog = ({
         />
         <Button
           borderColor="dvSeparatorBorder"
+          onClick={handleFileExplorer}
           as="label"
           size="xs"
           cursor="pointer"
