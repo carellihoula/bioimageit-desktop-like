@@ -17,8 +17,12 @@ import { WorkflowManager } from "./panels/WorkflowManager";
 import { MainMenuBar } from "./components/common/MainMenuBar";
 import { dockviewThemes } from "./components/common/DockviewThemeSelector";
 import { LogsPanel } from "./panels/LogsPanel";
-// import { mockNode } from "./mock/fakeProperties";
-import { mockNodeCellpose } from "./mock/mockNodeCellpose";
+import { DockMaximizeCloseControls } from "./components/common/DockMaximizeCloseControls";
+import MainDialogContent from "./components/dialogs/MainDialogContent";
+
+// import DraggableDialog from "./components/common/DraggableDialog";
+// import { Button } from "@chakra-ui/react";
+// import { tabComponents } from "./components/common/tabcomponents";
 
 /**
  * Components to be used in the Dockview panels.
@@ -33,7 +37,7 @@ const components = {
         return <Tools />;
       case "properties":
         //mockNode, mockNodeCellpose
-        return <Properties node={mockNodeCellpose} />;
+        return <Properties />;
       case "workflow":
         return <Workflow />;
       case "webtabletool":
@@ -57,6 +61,7 @@ const App: React.FC = () => {
   // Panel columnHook to track window width
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [theme, setTheme] = useState(dockviewThemes[0].theme);
+
   // Each time the `theme` changes, we apply its className to <html>.
   // Each time the theme changes, we (re)apply the class to html
   useEffect(() => {
@@ -90,6 +95,8 @@ const App: React.FC = () => {
       title: "Tools",
       component: "default",
       initialWidth: toolsInitialWidth,
+      initialHeight: 800, // 400px pour le haut
+
       position: { direction: "left" },
     });
     api.addPanel({
@@ -110,7 +117,7 @@ const App: React.FC = () => {
       id: "properties",
       title: "Properties",
       component: "default",
-      initialHeight: 320,
+      // initialHeight: 320,
       initialWidth: toolsInitialWidth,
       position: {
         referencePanel: "tools",
@@ -138,6 +145,10 @@ const App: React.FC = () => {
       id: "logstool",
       title: "Logs Tool",
       component: "default",
+      // tabComponent: "default",
+      // params: {
+      //   myValue: "Logs Tool",
+      // },
     });
 
     //webTablePanel is active by default
@@ -169,9 +180,12 @@ const App: React.FC = () => {
       <DockviewReact
         onReady={onReady}
         components={components}
+        // tabComponents={tabComponents}
         theme={theme}
+        rightHeaderActionsComponent={DockMaximizeCloseControls}
         className={theme.className}
       />
+      <MainDialogContent />
     </div>
   );
 };

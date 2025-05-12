@@ -1,5 +1,5 @@
 // import React from "react";
-import { Position, Node, NodeProps } from "@xyflow/react";
+import { Position, Node, NodeProps, useStore } from "@xyflow/react";
 import { CustomHandle } from "./CustomHandle";
 
 export type IOData = { label?: string };
@@ -12,6 +12,12 @@ type IONode = Node<IOData, string>;
  * - Invisible React Flow handles on the left and right edges
  */
 export function IOBlockNode({ id, data, selected }: NodeProps<IONode>) {
+  const edges = useStore((s) => s.edges);
+
+  // Check if an edge is connected to the left handle (target)
+  const isInConnected = edges.some((e) => e.target === id);
+  // Check if an edge originates from the right handle (source)
+  const isOutConnected = edges.some((e) => e.source === id);
   return (
     <div
       tabIndex={0}
@@ -34,7 +40,9 @@ export function IOBlockNode({ id, data, selected }: NodeProps<IONode>) {
         <label className="flex items-center gap-1 text-sm">
           <input
             type="radio"
-            name={`flow-radio-${id}`}
+            name={`flow-radio-${id}-in`}
+            checked={isInConnected}
+            readOnly
             value="in"
             className="accent-blue-500"
           />
@@ -44,7 +52,9 @@ export function IOBlockNode({ id, data, selected }: NodeProps<IONode>) {
         <label className="flex items-center gap-1 text-sm">
           <input
             type="radio"
-            name={`flow-radio-${id}`}
+            name={`flow-radio-${id}-out`}
+            checked={isOutConnected}
+            readOnly
             value="out"
             className="accent-blue-500"
           />

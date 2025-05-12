@@ -3,7 +3,7 @@ import { LargeIconButton } from "../components/custom-ui/LargeIconButton";
 
 export function ExecutionControls() {
   return (
-    <div className="flex flex-col items-center p-4">
+    <div className="flex flex-col items-center p-4 overflow-auto h-full">
       <LargeIconButton
         label="Run unexecuted nodes"
         icon={<Play size={16} />}

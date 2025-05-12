@@ -1,4 +1,5 @@
 // import React from "react";
+// import { Button } from "@chakra-ui/react";
 
 const fakeLogs = [
   {
@@ -60,6 +61,19 @@ export const LogsPanel = () => {
           <span className="flex-1">{log.message}</span>
         </div>
       ))}
+      {/* <Button onClick={selectFolderFromBackend}>Choisir un dossier</Button>; */}
     </div>
   );
 };
+
+// async function selectFolderFromBackend() {
+//   const res = await fetch("http://localhost:8000/select-folder");
+//   const data = await res.json();
+
+//   if (res.ok) {
+//     console.log("Dossier sélectionné :", data.path);
+//     // Tu peux afficher un message, ou envoyer une requête pour créer un projet
+//   } else {
+//     alert("Aucun dossier sélectionné");
+//   }
+// }

@@ -38,7 +38,7 @@ export function Tools() {
         />
       </div>
 
-      <div className="w-[98%] dv-fg overflow-y-auto flex-1">
+      <div className="w-full dv-fg overflow-y-auto flex-1">
         <FileTree search={searchTerm} />
       </div>
     </div>

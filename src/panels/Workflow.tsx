@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, useCallback, MouseEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  MouseEvent,
+  useMemo,
+} from "react";
 import {
   ReactFlow,
   Background,
@@ -22,56 +29,60 @@ import { IOBlockNode } from "@/components/Workflow-ui/BasicIOBlockNode";
 import { useCopyPaste } from "@/hooks/workflow-ui/useCopyPaste";
 import { useFlowHistory } from "@/hooks/workflow-ui/useFlowHistory";
 import { contextMenu } from "@/lib/const";
-// import { Item } from "@radix-ui/react-menubar";
 import { ContextMenu } from "@/components/Workflow-ui/ContextMenu";
-import { initialNodes } from "@/mock/initialNodesAndEdges";
 import { ToolInfo } from "@/types";
 import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
 
-// keys in localStorage
-const STORAGE_NODES = "workflow-nodes";
-const STORAGE_EDGES = "workflow-edges";
-
-const nodeTypes = {
-  sticky: StickyNoteNode,
-  comment: CommentNode,
-  io: IOBlockNode,
-};
-
-const initialEdges: Edge[] = [];
-
 export default function Workflow() {
+  const nodeTypes = useMemo(
+    () => ({
+      sticky: StickyNoteNode,
+      comment: CommentNode,
+      io: IOBlockNode,
+    }),
+    []
+  );
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
 
-  // load saved or fallback
-  const savedNodesJson = localStorage.getItem(STORAGE_NODES);
-  const savedEdgesJson = localStorage.getItem(STORAGE_EDGES);
-
   // ReactFlow state
-  const [nodes, setNodes, onRFNodesChange] = useNodesState(
-    savedNodesJson ? JSON.parse(savedNodesJson) : initialNodes
-  );
-  const [edges, setEdges, onRFEdgesChange] = useEdgesState(
-    savedEdgesJson ? JSON.parse(savedEdgesJson) : initialEdges
-  );
+  const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onRFEdgesChange] = useEdgesState<Edge>([]);
 
   useCopyPaste(rfInstance);
   const { init, push, undo, redo } = useFlowHistory();
 
-  // on mount, seed the history with our starting graph
-  useEffect(() => {
-    init(nodes, edges);
-  }, [init]);
+  // init flow history
+  const onInit = useCallback(
+    (instance: ReactFlowInstance) => {
+      setRfInstance(instance);
 
-  // persist on every change
-  useEffect(() => {
-    localStorage.setItem(STORAGE_NODES, JSON.stringify(nodes));
-  }, [nodes]);
+      const saved = localStorage.getItem("flow");
+      if (!saved) {
+        init([], []);
+        return;
+      }
 
+      try {
+        const flow = JSON.parse(saved);
+        instance.setNodes(flow.nodes || []);
+        instance.setEdges(flow.edges || []);
+        instance.setViewport(flow.viewport || { x: 0, y: 0, zoom: 1 });
+        init(flow.nodes || [], flow.edges || []);
+      } catch {
+        console.warn("Flow data corrupted, start empty");
+        init([], []);
+      }
+    },
+    [init]
+  );
+
+  // save flow to localStorage on change
   useEffect(() => {
-    localStorage.setItem(STORAGE_EDGES, JSON.stringify(edges));
-  }, [edges]);
+    if (!rfInstance) return;
+    const flow = rfInstance.toObject();
+    localStorage.setItem("flow", JSON.stringify(flow));
+  }, [nodes, edges, rfInstance]);
 
   // context menu state
   const [ctx, setCtx] = useState<{
@@ -184,7 +195,7 @@ export default function Workflow() {
       if (!data || !reactFlowBounds || !rfInstance) return;
 
       const tool = JSON.parse(data) as ToolInfo;
-      console.log("tool", tool);
+      // console.log("tool", tool);
       const { x: viewportX, y: viewportY, zoom } = rfInstance.getViewport();
       const position = {
         x: (event.clientX - reactFlowBounds.left - viewportX) / zoom,
@@ -219,7 +230,7 @@ export default function Workflow() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        onInit={setRfInstance}
+        onInit={onInit}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
