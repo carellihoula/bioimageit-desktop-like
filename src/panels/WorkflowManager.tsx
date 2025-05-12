@@ -1,13 +1,8 @@
-import {
-  createWorkflow,
-  deleteWorkflow,
-  duplicateWorkflow,
-  fetchWorkflows,
-  renameWorkflow,
-} from "@/api/workflow/workflowApi";
-import { Button, VStack, Box, Text, Spinner, Input } from "@chakra-ui/react";
+import { duplicateWorkflow, fetchWorkflows } from "@/api/workflow/workflowApi";
+import { Button, VStack, Box, Text, Spinner } from "@chakra-ui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { useDialogStore } from "@/store/useDialogStore";
 
 /**
  * WorkflowManager component to manage workflows.
@@ -16,39 +11,13 @@ import { useState } from "react";
 export const WorkflowManager = () => {
   const [selected, setSelected] = useState<string | null>(null);
   const selectedName = selected?.split("/").pop();
-  const [workflowName, setWorkflowName] = useState("");
 
+  const { openDialog } = useDialogStore();
   const queryClient = useQueryClient();
   const { isPending, error, data } = useQuery({
     queryKey: ["getWorkflows"],
     queryFn: fetchWorkflows,
     staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-
-  const { mutate } = useMutation({
-    mutationFn: createWorkflow,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getWorkflows"] });
-      setWorkflowName("");
-    },
-    // onError: (error: any) => {},
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteWorkflow,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getWorkflows"] });
-      setSelected(null);
-    },
-    // onError: (e: any) => {}
-  });
-
-  const renameMutation = useMutation({
-    mutationFn: renameWorkflow,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getWorkflows"] });
-    },
-    // onError: (e: any) => {},
   });
 
   // Duplicate workflow mutation
@@ -87,22 +56,14 @@ export const WorkflowManager = () => {
       className="w-full"
       overflowY={"auto"}
     >
-      <Input
-        size="sm"
-        placeholder="New workflow name"
-        value={workflowName}
-        onChange={(e) => setWorkflowName(e.target.value)}
-        bg="dvBackground"
-        color="dvForeground"
-        borderColor="dvSeparatorBorder"
-      />
       <Button
-        onClick={() => mutate(workflowName)}
+        // onClick={() => mutate(workflowName)}
+        onClick={() => openDialog("create")}
         variant="outline"
         size="sm"
         bg="dvBackground"
         color="dvForeground"
-        disabled={!workflowName}
+        // disabled={!workflowName}
         borderColor="dvSeparatorBorder"
         _hover={{
           bg: "dvHoverBg",
@@ -122,7 +83,6 @@ export const WorkflowManager = () => {
       >
         Open workflow
       </Button>
-
       <Box
         borderWidth="1px"
         borderColor="gray.600"
@@ -169,17 +129,8 @@ export const WorkflowManager = () => {
           ))
         )}
       </Box>
-
       <Button
-        onClick={() => {
-          if (selected) {
-            const newName = prompt("New name:", selected);
-            if (newName && newName !== selected) {
-              renameMutation.mutate({ oldName: selected, newName });
-              setSelected(newName); // update selected name
-            }
-          }
-        }}
+        onClick={() => selected && openDialog("rename", selected)}
         disabled={!selected}
         variant="outline"
         size="sm"
@@ -221,9 +172,7 @@ export const WorkflowManager = () => {
         Export workflow
       </Button>
       <Button
-        onClick={() => {
-          if (selected) deleteMutation.mutate(selected);
-        }}
+        onClick={() => selected && openDialog("delete", selected)}
         disabled={!selected}
         variant="outline"
         size="sm"
