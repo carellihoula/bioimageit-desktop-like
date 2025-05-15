@@ -4,13 +4,9 @@
  * Used to interface between the web frontend and Python backend
  */
 interface PywebviewApiBridge {
-  selectFolderDialog: () => Promise<string | null>;
   // method_name: (param1: type, param2: type) => Promise<return_type>;
-  save_file_dialog: (
-    filename: string,
-    base64_data: string
-  ) => Promise<{ path?: string; error?: string }>;
-  export_workflow_direct_save: (
+  selectFolderDialog: () => Promise<string | null>;
+  exportWorkflowDirectSave: (
     workflow_full_path_str: string
   ) => Promise<{ path?: string; error?: string }>;
 }

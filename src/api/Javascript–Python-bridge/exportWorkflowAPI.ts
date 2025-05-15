@@ -26,11 +26,11 @@ export async function exportAndSaveWorkflow(
   if (
     window.pywebview &&
     window.pywebview.api &&
-    typeof window.pywebview.api.export_workflow_direct_save === "function"
+    typeof window.pywebview.api.exportWorkflowDirectSave === "function"
   ) {
     try {
       // Call the Python method that handles everything (zip creation, reading, encoding, save dialog)
-      const result = await window.pywebview.api.export_workflow_direct_save(
+      const result = await window.pywebview.api.exportWorkflowDirectSave(
         workflowFullPath
       );
 
