@@ -3,6 +3,7 @@ import { Button, VStack, Box, Text, Spinner } from "@chakra-ui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useDialogStore } from "@/store/useDialogStore";
+import { exportAndSaveWorkflow } from "@/api/Javascript–Python-bridge/exportWorkflowAPI";
 
 /**
  * WorkflowManager component to manage workflows.
@@ -10,7 +11,11 @@ import { useDialogStore } from "@/store/useDialogStore";
  */
 export const WorkflowManager = () => {
   const [selected, setSelected] = useState<string | null>(null);
+  console.log("selected", selected);
   const selectedName = selected?.split("/").pop();
+  console.log("selectedName", selectedName);
+  const targetParentPath = selected?.split("/").slice(0, -1).join("/");
+  console.log("targetParentPath", targetParentPath);
 
   const { openDialog } = useDialogStore();
   const queryClient = useQueryClient();
@@ -33,16 +38,13 @@ export const WorkflowManager = () => {
 
   const handleDuplicate = () => {
     if (selected) {
-      const targetName = `${selected}-copy`;
-      duplicateMutation.mutate({ source: selected, target: targetName });
+      const targetName = `${selectedName}-copy`;
+      duplicateMutation.mutate({
+        source_path: selected,
+        target_parent_path: targetParentPath ?? "",
+        target_name: targetName,
+      });
     }
-  };
-
-  const handleDownload = async (name: string) => {
-    const link = document.createElement("a");
-    link.href = `http://localhost:8000/api/workflows/export/${name}`;
-    link.download = `${name}.zip`;
-    link.click();
   };
 
   return (
@@ -131,7 +133,7 @@ export const WorkflowManager = () => {
       </Box>
       <Button
         onClick={() => selected && openDialog("rename", selected)}
-        disabled={!selected}
+        disabled={!selected || data?.length === 0}
         variant="outline"
         size="sm"
         bg="dvBackground"
@@ -153,13 +155,17 @@ export const WorkflowManager = () => {
           bg: "dvHoverBg",
         }}
         onClick={handleDuplicate}
-        disabled={!selected}
+        disabled={!selected || data?.length === 0}
       >
         Duplicate workflow
       </Button>
       <Button
-        onClick={() => selectedName && handleDownload(selectedName)}
-        disabled={!selected}
+        onClick={() =>
+          selected &&
+          selectedName &&
+          exportAndSaveWorkflow(selected, selectedName)
+        }
+        disabled={!selected || data?.length === 0}
         variant="outline"
         size="sm"
         bg="dvBackground"
@@ -173,7 +179,7 @@ export const WorkflowManager = () => {
       </Button>
       <Button
         onClick={() => selected && openDialog("delete", selected)}
-        disabled={!selected}
+        disabled={!selected || data?.length === 0}
         variant="outline"
         size="sm"
         bg="dvBackground"
