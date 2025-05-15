@@ -48,8 +48,11 @@ function MainDialogContent() {
         <RenameWorkflowDialog
           workflow={workflow}
           onCancel={closeDialog}
-          onRename={(newName) =>
-            renameMutation.mutate({ oldName: workflow, newName })
+          onRename={(new_name) =>
+            renameMutation.mutate({
+              old_full_path: workflow,
+              new_name,
+            })
           }
         />
       )}
