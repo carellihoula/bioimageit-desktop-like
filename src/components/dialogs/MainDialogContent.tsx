@@ -13,6 +13,7 @@ import { useDialogStore } from "@/store/useDialogStore";
 
 function MainDialogContent() {
   const { isOpen, type, workflow, closeDialog } = useDialogStore();
+  // console.log("MainDialogContent", isOpen, type, workflow);
   const queryClient = useQueryClient();
   const renameMutation = useMutation({
     mutationFn: renameWorkflow,
@@ -47,8 +48,11 @@ function MainDialogContent() {
         <RenameWorkflowDialog
           workflow={workflow}
           onCancel={closeDialog}
-          onRename={(newName) =>
-            renameMutation.mutate({ oldName: workflow, newName })
+          onRename={(new_name) =>
+            renameMutation.mutate({
+              old_full_path: workflow,
+              new_name,
+            })
           }
         />
       )}
@@ -62,7 +66,9 @@ function MainDialogContent() {
       {type === "create" && (
         <CreateWorkflowDialog
           onCancel={closeDialog}
-          onCreate={(nameW) => createMutattion.mutate(nameW)}
+          onCreate={(workflowName, path) =>
+            createMutattion.mutate({ name: workflowName, path })
+          }
         />
       )}
     </DraggableMainDialog>

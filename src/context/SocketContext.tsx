@@ -71,7 +71,13 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
           action: "subscribe",
           topic: "table_data",
         });
+        // Subscribe to "open_explorer" topic
+        const subscribeExplorer = JSON.stringify({
+          action: "subscribe",
+          topic: "open_explorer",
+        });
         ws.send(subscribeMessage);
+        ws.send(subscribeExplorer);
       };
 
       ws.onmessage = (event: MessageEvent) => {
@@ -85,7 +91,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
             // console.log("data :", jsonData.message);
           } else {
             // to be modified later
-            setMessages((prev) => [...prev, rawMessage]);
+            // setMessages((prev) => [...prev, rawMessage]);
+            // console.log("Unknown topic:", jsonData.topic);
           }
         } catch (error) {
           console.error("Error parsing JSON message:", error);

@@ -1,22 +1,29 @@
 import { useState } from "react";
 import { Input, Button, VStack, Flex } from "@chakra-ui/react";
+import { selectFolderViaPywebview } from "@/api/Javascript–Python-bridge/SelectedFolderAPI";
 
 export const CreateWorkflowDialog = ({
   onCancel,
   onCreate,
 }: {
-  onCreate: (newName: string) => void;
+  onCreate: (workflowName: string, path: string) => void;
   onCancel: () => void;
 }) => {
   const [name, setName] = useState("");
+  const [selectedFolderPath, setSelectedFolderPath] = useState("");
+  // console.log("selectedFolderPath", selectedFolderPath);
+
+  const handleSelectFolderClick = async () => {
+    const path = await selectFolderViaPywebview();
+    if (path !== null) {
+      setSelectedFolderPath(path);
+    } else {
+      setSelectedFolderPath("");
+    }
+  };
 
   return (
     <VStack align="stretch">
-      {/* <Input
-        value={newName}
-        onChange={(e) => setNewName(e.target.value)}
-        placeholder="Select a path to Save Workflow"
-      /> */}
       <Flex align="center" gap={2} w="full">
         <Input
           type="text"
@@ -25,9 +32,12 @@ export const CreateWorkflowDialog = ({
           placeholder="Path to file"
           flex="1"
           size="xs"
+          defaultValue={selectedFolderPath}
+          readOnly
         />
         <Button
           borderColor="dvSeparatorBorder"
+          onClick={handleSelectFolderClick}
           as="label"
           size="xs"
           cursor="pointer"
@@ -38,7 +48,6 @@ export const CreateWorkflowDialog = ({
           }}
         >
           Browse...
-          {/* TO DO : Send a message to the backend via WebSocket so that Qt opens the file explorer.*/}
         </Button>
       </Flex>
       <Input
@@ -46,7 +55,10 @@ export const CreateWorkflowDialog = ({
         onChange={(e) => setName(e.target.value)}
         placeholder="New Workflow Name"
       />
-      <Button onClick={() => onCreate(name)} disabled={!name}>
+      <Button
+        onClick={() => onCreate(name, selectedFolderPath)}
+        disabled={!name || !selectedFolderPath}
+      >
         Create
       </Button>
       <Button onClick={onCancel} variant="ghost">
