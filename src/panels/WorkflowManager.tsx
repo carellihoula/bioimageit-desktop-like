@@ -32,7 +32,7 @@ export const WorkflowManager = () => {
   // console.log("selectedName", selectedName);
   const targetParentPath = selectedPath?.split("/").slice(0, -1).join("/");
 
-  // Quand data change, on met à jour la liste globale
+  // When data changes, we update the global list
   useEffect(() => {
     if (data) setPaths(data);
   }, [data, setPaths]);
