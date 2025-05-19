@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useDialogStore } from "@/store/useDialogStore";
 import { exportAndSaveWorkflow } from "@/api/Javascript–Python-bridge/exportWorkflowAPI";
+// import { useReactFlow } from "@xyflow/react";
 
 /**
  * WorkflowManager component to manage workflows.
@@ -11,11 +12,11 @@ import { exportAndSaveWorkflow } from "@/api/Javascript–Python-bridge/exportWo
  */
 export const WorkflowManager = () => {
   const [selected, setSelected] = useState<string | null>(null);
-  console.log("selected", selected);
+  // console.log("selected", selected);
   const selectedName = selected?.split("/").pop();
-  console.log("selectedName", selectedName);
+  // console.log("selectedName", selectedName);
   const targetParentPath = selected?.split("/").slice(0, -1).join("/");
-  console.log("targetParentPath", targetParentPath);
+  // console.log("targetParentPath", targetParentPath);
 
   const { openDialog } = useDialogStore();
   const queryClient = useQueryClient();
@@ -75,6 +76,7 @@ export const WorkflowManager = () => {
       </Button>
       <Button
         variant="outline"
+        // onClick={handleOpenWorkflow}
         size="sm"
         bg="dvBackground"
         color="dvForeground"
