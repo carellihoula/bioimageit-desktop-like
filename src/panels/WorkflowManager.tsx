@@ -1,9 +1,10 @@
 import { duplicateWorkflow, fetchWorkflows } from "@/api/workflow/workflowApi";
 import { Button, VStack, Box, Text, Spinner } from "@chakra-ui/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect } from "react";
 import { useDialogStore } from "@/store/useDialogStore";
 import { exportAndSaveWorkflow } from "@/api/Javascript–Python-bridge/exportWorkflowAPI";
+import { useWorkflowStore } from "@/store/useWorkflowStore";
 // import { useReactFlow } from "@xyflow/react";
 
 /**
@@ -11,20 +12,32 @@ import { exportAndSaveWorkflow } from "@/api/Javascript–Python-bridge/exportWo
  * It allows users to create, open, rename, duplicate, export, and delete workflows.
  */
 export const WorkflowManager = () => {
-  const [selected, setSelected] = useState<string | null>(null);
-  // console.log("selected", selected);
-  const selectedName = selected?.split("/").pop();
-  // console.log("selectedName", selectedName);
-  const targetParentPath = selected?.split("/").slice(0, -1).join("/");
-  // console.log("targetParentPath", targetParentPath);
-
-  const { openDialog } = useDialogStore();
   const queryClient = useQueryClient();
   const { isPending, error, data } = useQuery({
     queryKey: ["getWorkflows"],
     queryFn: fetchWorkflows,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // const [selected, setSelected] = useState<string | null>(null);
+  // console.log("selected", selected);
+
+  // console.log("targetParentPath", targetParentPath);
+  const selectedPath = useWorkflowStore((state) => state.selectedPath);
+  const setSelectedPath = useWorkflowStore((state) => state.setSelectedPath);
+  const paths = useWorkflowStore((state) => state.paths);
+  const setPaths = useWorkflowStore((state) => state.setPaths);
+
+  const selectedName = selectedPath?.split("/").pop();
+  // console.log("selectedName", selectedName);
+  const targetParentPath = selectedPath?.split("/").slice(0, -1).join("/");
+
+  // Quand data change, on met à jour la liste globale
+  useEffect(() => {
+    if (data) setPaths(data);
+  }, [data, setPaths]);
+
+  const { openDialog } = useDialogStore();
 
   // Duplicate workflow mutation
   const duplicateMutation = useMutation({
@@ -38,13 +51,42 @@ export const WorkflowManager = () => {
   });
 
   const handleDuplicate = () => {
-    if (selected) {
+    if (selectedPath) {
       const targetName = `${selectedName}-copy`;
       duplicateMutation.mutate({
-        source_path: selected,
+        source_path: selectedPath,
         target_parent_path: targetParentPath ?? "",
         target_name: targetName,
       });
+    }
+  };
+
+  const handleOpenWorkflow = async () => {
+    if (
+      window.pywebview &&
+      window.pywebview.api &&
+      typeof window.pywebview.api.openWorkflowFromSelectedFolder === "function"
+    ) {
+      try {
+        const result =
+          await window.pywebview.api.openWorkflowFromSelectedFolder();
+
+        if (result.success && result.graph_data && result.path) {
+          // setCurrentWorkflowPath(result.path);
+          setSelectedPath(result.path);
+          if (!paths.includes(result.path)) {
+            const updated = [...paths, result.path];
+            setPaths(updated);
+
+            queryClient.setQueryData(["getWorkflows"], updated);
+            // setPaths([...paths, result.path]);
+          }
+        } else if (result.error) {
+          alert(`Erreur lors de l'ouverture du workflow: ${result.error}`);
+        }
+      } catch (error) {
+        alert(`Erreur JavaScript: ${error}`);
+      }
     }
   };
 
@@ -76,7 +118,7 @@ export const WorkflowManager = () => {
       </Button>
       <Button
         variant="outline"
-        // onClick={handleOpenWorkflow}
+        onClick={handleOpenWorkflow}
         size="sm"
         bg="dvBackground"
         color="dvForeground"
@@ -124,9 +166,10 @@ export const WorkflowManager = () => {
               py={1}
               borderRadius="sm"
               cursor="pointer"
-              bg={selected === path ? "dvHoverBg" : "transparent"}
+              bg={selectedPath === path ? "dvHoverBg" : "transparent"}
               _hover={{ bg: "dvHoverBg" }}
-              onClick={() => setSelected(path)}
+              // onClick={() => setSelected(path)}
+              onClick={() => setSelectedPath(path)}
             >
               {path}
             </Text>
@@ -134,8 +177,8 @@ export const WorkflowManager = () => {
         )}
       </Box>
       <Button
-        onClick={() => selected && openDialog("rename", selected)}
-        disabled={!selected || data?.length === 0}
+        onClick={() => selectedPath && openDialog("rename", selectedPath)}
+        disabled={!selectedPath || data?.length === 0}
         variant="outline"
         size="sm"
         bg="dvBackground"
@@ -157,17 +200,17 @@ export const WorkflowManager = () => {
           bg: "dvHoverBg",
         }}
         onClick={handleDuplicate}
-        disabled={!selected || data?.length === 0}
+        disabled={!selectedPath || data?.length === 0}
       >
         Duplicate workflow
       </Button>
       <Button
         onClick={() =>
-          selected &&
+          selectedPath &&
           selectedName &&
-          exportAndSaveWorkflow(selected, selectedName)
+          exportAndSaveWorkflow(selectedPath, selectedName)
         }
-        disabled={!selected || data?.length === 0}
+        disabled={!selectedPath || data?.length === 0}
         variant="outline"
         size="sm"
         bg="dvBackground"
@@ -180,8 +223,8 @@ export const WorkflowManager = () => {
         Export workflow
       </Button>
       <Button
-        onClick={() => selected && openDialog("delete", selected)}
-        disabled={!selected || data?.length === 0}
+        onClick={() => selectedPath && openDialog("delete", selectedPath)}
+        disabled={!selectedPath || data?.length === 0}
         variant="outline"
         size="sm"
         bg="dvBackground"

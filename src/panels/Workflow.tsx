@@ -32,6 +32,7 @@ import { contextMenu } from "@/lib/const";
 import { ContextMenu } from "@/components/Workflow-ui/ContextMenu";
 import { ToolInfo } from "@/types";
 import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
+import { useWorkflowStore } from "@/store/useWorkflowStore";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -44,7 +45,8 @@ export default function Workflow() {
   );
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
-
+  const selectedPath = useWorkflowStore((state) => state.selectedPath);
+  console.log("selected Path: ", selectedPath);
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onRFEdgesChange] = useEdgesState<Edge>([]);
@@ -52,37 +54,64 @@ export default function Workflow() {
   useCopyPaste(rfInstance);
   const { init, push, undo, redo } = useFlowHistory();
 
-  // init flow history
-  const onInit = useCallback(
-    (instance: ReactFlowInstance) => {
-      setRfInstance(instance);
+  // Load workflow when selectedPath changes
+  useEffect(() => {
+    if (!selectedPath || !rfInstance) return;
 
-      const saved = localStorage.getItem("flow");
-      if (!saved) {
-        init([], []);
-        return;
-      }
-
+    async function load() {
       try {
-        const flow = JSON.parse(saved);
-        instance.setNodes(flow.nodes || []);
-        instance.setEdges(flow.edges || []);
-        instance.setViewport(flow.viewport || { x: 0, y: 0, zoom: 1 });
-        init(flow.nodes || [], flow.edges || []);
-      } catch {
-        console.warn("Flow data corrupted, start empty");
+        const flow = await window.pywebview?.api.loadWorkflow(
+          selectedPath ?? ""
+        );
+        console.log("Réponse loadWorkflow", flow);
+
+        if (!flow || !flow.success) {
+          console.error("Loading failed:", flow?.error);
+          init([], []);
+          return;
+        }
+
+        const data = flow.data;
+        rfInstance?.setNodes(data?.nodes ?? []);
+        rfInstance?.setEdges(data?.edges ?? []);
+        rfInstance?.setViewport(data?.viewport ?? { x: 0, y: 0, zoom: 1 });
+        init(data?.nodes ?? [], data?.edges ?? []);
+      } catch (err) {
+        console.error("JS error in loadWorkflow", err);
         init([], []);
       }
-    },
-    [init]
-  );
+    }
+
+    load();
+  }, [selectedPath, rfInstance, init]);
+
+  // Save flow on nodes or edges change
+  useEffect(() => {
+    if (!rfInstance || !selectedPath) return;
+
+    async function save() {
+      try {
+        const flow = rfInstance?.toObject();
+        await window.pywebview?.api.saveWorkflow(selectedPath ?? "", flow);
+      } catch (err) {
+        console.error("Failed to save workflow", err);
+      }
+    }
+
+    save();
+  }, [nodes, edges, rfInstance, selectedPath]);
+
+  // init flow history
+  const onInit = useCallback((instance: ReactFlowInstance) => {
+    setRfInstance(instance);
+  }, []);
 
   // save flow to localStorage on change
-  useEffect(() => {
-    if (!rfInstance) return;
-    const flow = rfInstance.toObject();
-    localStorage.setItem("flow", JSON.stringify(flow));
-  }, [nodes, edges, rfInstance]);
+  // useEffect(() => {
+  //   if (!rfInstance) return;
+  //   const flow = rfInstance.toObject();
+  //   localStorage.setItem("flow", JSON.stringify(flow));
+  // }, [nodes, edges, rfInstance]);
 
   // context menu state
   const [ctx, setCtx] = useState<{
