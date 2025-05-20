@@ -10,7 +10,7 @@ import { NodeData } from "../types";
 
 interface SocketContextProps {
   sendMessage: (msg: string) => void;
-  messages: NodeData[];
+  messages: any;
   connectionStatus: "connected" | "disconnected" | "reconnecting";
 }
 
@@ -38,7 +38,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
   url,
 }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<NodeData[]>([]);
+  const [messages, setMessages] = useState<any>([]);
   const [connectionStatus, setConnectionStatus] = useState<
     "connected" | "disconnected" | "reconnecting"
   >("disconnected");

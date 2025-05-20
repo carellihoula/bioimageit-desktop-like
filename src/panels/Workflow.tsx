@@ -33,6 +33,8 @@ import { ContextMenu } from "@/components/Workflow-ui/ContextMenu";
 import { ToolInfo } from "@/types";
 import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
 import { useWorkflowStore } from "@/store/useWorkflowStore";
+import { useCodeServerStore } from "@/store/useCodeServerStore";
+import { useSocket } from "@/context/SocketContext";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -46,10 +48,17 @@ export default function Workflow() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
-  console.log("selected Path: ", selectedPath);
+  const { sendMessage } = useSocket();
+  // console.log("selected Path: ", selectedPath);
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onRFEdgesChange] = useEdgesState<Edge>([]);
+
+  async function launchCodeServer() {
+    const result = await window?.pywebview?.api.launchCodeServer();
+    // console.log(result);
+    // alert("Code-server status: " + result.status);
+  }
 
   useCopyPaste(rfInstance);
   const { init, push, undo, redo } = useFlowHistory();
@@ -63,10 +72,10 @@ export default function Workflow() {
         const flow = await window.pywebview?.api.loadWorkflow(
           selectedPath ?? ""
         );
-        console.log("Réponse loadWorkflow", flow);
+        // console.log("Réponse loadWorkflow", flow);
 
         if (!flow || !flow.success) {
-          console.error("Loading failed:", flow?.error);
+          // console.error("Loading failed:", flow?.error);
           init([], []);
           return;
         }
@@ -182,12 +191,28 @@ export default function Workflow() {
   }, [ctx, setNodes]);
 
   const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
+    if (!ctx) return;
     if (action === "duplicate") {
       duplicateNode();
     } else if (action === "delete") {
       deleteNode();
     } else if (action === "edit") {
-      alert("open code-server");
+      // alert("open code-server");
+      // openCodeServerPanel(ctx.node.id);
+      useCodeServerStore.getState().setNodeId(ctx.node.id);
+      const tool = ctx.node.data.tool as ToolInfo;
+      console.log("node: ", tool.module_path);
+      useCodeServerStore.getState().openPanel();
+      launchCodeServer();
+      // const filePath = tool.module_path?.replace(/\./g, "/") + ".py";
+      // const message = {
+      //   topic: "open_file",
+      //   action: "publish",
+      //   message: filePath,
+      // };
+
+      // sendMessage(JSON.stringify(message));
+      // console.log("Sending message:", message);
     }
     setCtx(null);
   };
