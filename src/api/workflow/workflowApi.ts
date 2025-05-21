@@ -1,5 +1,5 @@
 export async function fetchWorkflows(): Promise<string[]> {
-  const response = await fetch("http://localhost:8000/api/workflows");
+  const response = await fetch("http://localhost:8000/api/workflows/");
   const data: string[] = await response.json();
   return data;
 }
