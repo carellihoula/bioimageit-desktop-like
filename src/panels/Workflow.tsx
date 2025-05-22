@@ -48,7 +48,8 @@ export default function Workflow() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
-  const { sendMessage } = useSocket();
+  const pendingMessage = useRef<string | null>(null);
+  const { sendMessage, withPermission } = useSocket();
   // console.log("selected Path: ", selectedPath);
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
@@ -72,7 +73,8 @@ export default function Workflow() {
         const flow = await window.pywebview?.api.loadWorkflow(
           selectedPath ?? ""
         );
-        // console.log("Réponse loadWorkflow", flow);
+        console.log("Réponse loadWorkflow", flow);
+        console.log("Réponse loadWorkflow", selectedPath);
 
         if (!flow || !flow.success) {
           // console.error("Loading failed:", flow?.error);
@@ -190,7 +192,9 @@ export default function Workflow() {
     setCtx(null);
   }, [ctx, setNodes]);
 
-  const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
+  const handleAction = async (
+    action: (typeof contextMenu)[number]["action"]
+  ) => {
     if (!ctx) return;
     if (action === "duplicate") {
       duplicateNode();
@@ -199,23 +203,40 @@ export default function Workflow() {
     } else if (action === "edit") {
       // alert("open code-server");
       // openCodeServerPanel(ctx.node.id);
-      useCodeServerStore.getState().setNodeId(ctx.node.id);
+      // useCodeServerStore.getState().setNodeId(ctx.node.id);
       const tool = ctx.node.data.tool as ToolInfo;
       console.log("node: ", tool.module_path);
       useCodeServerStore.getState().openPanel();
       launchCodeServer();
-      // const filePath = tool.module_path?.replace(/\./g, "/") + ".py";
-      // const message = {
-      //   topic: "open_file",
-      //   action: "publish",
-      //   message: filePath,
-      // };
-
-      // sendMessage(JSON.stringify(message));
-      // console.log("Sending message:", message);
+      const filePath = tool.module_path?.replace(/\./g, "/") + ".py";
+      const message = {
+        topic: "open_file",
+        action: "publish",
+        message: `/home/carellihoula/Bureau/bioimageit-v2/${filePath}`,
+      };
+      const permission = {
+        action: "wait_for_permission",
+        topic: "open_file",
+      };
+      pendingMessage.current = JSON.stringify(message);
+      sendMessage(JSON.stringify(permission));
     }
     setCtx(null);
   };
+
+  useEffect(() => {
+    if (withPermission === true && pendingMessage.current) {
+      sendMessage(pendingMessage.current);
+      console.log(
+        "✅ Permission OK, message envoyé >>>",
+        pendingMessage.current
+      );
+      pendingMessage.current = null; // on vide après envoi
+    } else if (withPermission === false && pendingMessage.current) {
+      console.log("❌ Permission refusée, message annulé.");
+      pendingMessage.current = null;
+    }
+  }, [withPermission]);
 
   // global click to close menu
   useEffect(() => {

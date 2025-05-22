@@ -8,15 +8,21 @@ import React, {
 } from "react";
 import { NodeData } from "../types";
 
+// interface PERMIT{
+//   message: boolean
+// }
+
 interface SocketContextProps {
   sendMessage: (msg: string) => void;
   messages: any;
+  withPermission: boolean | null;
   connectionStatus: "connected" | "disconnected" | "reconnecting";
 }
 
 const SocketContext = createContext<SocketContextProps>({
   sendMessage: () => {},
   messages: [],
+  withPermission: false,
   connectionStatus: "disconnected",
 });
 
@@ -39,6 +45,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
 }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<any>([]);
+  const [withPermission, setWithPermission] = useState<boolean | null>(null);
+
+  // const [wait]
   const [connectionStatus, setConnectionStatus] = useState<
     "connected" | "disconnected" | "reconnecting"
   >("disconnected");
@@ -72,12 +81,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
           topic: "table_data",
         });
         // Subscribe to "open_explorer" topic
-        const subscribeExplorer = JSON.stringify({
-          action: "subscribe",
-          topic: "open_explorer",
-        });
+        // const subscribeExplorer = JSON.stringify({
+        //   action: "subscribe",
+        //   topic: "open_file",
+        // });
         ws.send(subscribeMessage);
-        ws.send(subscribeExplorer);
+        // ws.send(subscribeExplorer);
       };
 
       ws.onmessage = (event: MessageEvent) => {
@@ -85,7 +94,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
         // console.log("Raw message received:", rawMessage);
         try {
           const jsonData = JSON.parse(rawMessage);
-          if (jsonData.topic === "table_data") {
+          if (jsonData.action === "wait_for_permission") {
+            setWithPermission(jsonData.message); // met à jour true/false
+            console.log("Permission reçue:", jsonData.message);
+          } else if (jsonData.topic === "table_data") {
             // to be modified later
             setMessages((prev) => [...prev, jsonData.message]);
             // console.log("data :", jsonData.message);
@@ -98,7 +110,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
           console.error("Error parsing JSON message:", error);
         }
       };
-
+      // else if (jsonData.topic === "open_file") {
+      //             console.log("permission: ", jsonData.message);
+      //           }
       ws.onerror = (error) => {
         console.error("WebSocket error:", error);
       };
@@ -142,7 +156,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
   };
 
   return (
-    <SocketContext.Provider value={{ sendMessage, messages, connectionStatus }}>
+    <SocketContext.Provider
+      value={{ sendMessage, messages, connectionStatus, withPermission }}
+    >
       {children}
     </SocketContext.Provider>
   );
