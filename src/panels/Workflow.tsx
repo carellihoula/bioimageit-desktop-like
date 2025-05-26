@@ -192,6 +192,20 @@ export default function Workflow() {
     setCtx(null);
   }, [ctx, setNodes]);
 
+  //
+  const sendFileMessage = useCallback(
+    (filePath: string) => {
+      const message = {
+        topic: "open_file",
+        action: "publish",
+        message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+      };
+      sendMessage(JSON.stringify(message));
+      console.log("message sent  >>>", JSON.stringify(message));
+    },
+    [sendMessage]
+  );
+
   const handleAction = async (
     action: (typeof contextMenu)[number]["action"]
   ) => {
@@ -201,25 +215,31 @@ export default function Workflow() {
     } else if (action === "delete") {
       deleteNode();
     } else if (action === "edit") {
-      // alert("open code-server");
-      // openCodeServerPanel(ctx.node.id);
-      // useCodeServerStore.getState().setNodeId(ctx.node.id);
       const tool = ctx.node.data.tool as ToolInfo;
-      console.log("node: ", tool.module_path);
-      useCodeServerStore.getState().openPanel();
-      launchCodeServer();
+      // console.log("node: ", tool.module_path);
+
+      const codeServerStore = useCodeServerStore.getState();
+      if (!codeServerStore.isOpen) {
+        codeServerStore.openPanel();
+
+        launchCodeServer();
+      }
       const filePath = tool.module_path?.replace(/\./g, "/") + ".py";
-      const message = {
-        topic: "open_file",
-        action: "publish",
-        message: `/home/carellihoula/Bureau/bioimageit-v2/${filePath}`,
-      };
-      const permission = {
-        action: "wait_for_permission",
-        topic: "open_file",
-      };
-      pendingMessage.current = JSON.stringify(message);
-      sendMessage(JSON.stringify(permission));
+      if (withPermission) {
+        sendFileMessage(filePath);
+      } else {
+        // Otherwise, request permission and store the message
+        const permission = {
+          action: "wait_for_permission",
+          topic: "open_file",
+        };
+        pendingMessage.current = JSON.stringify({
+          topic: "open_file",
+          action: "publish",
+          message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+        });
+        sendMessage(JSON.stringify(permission));
+      }
     }
     setCtx(null);
   };
@@ -227,13 +247,10 @@ export default function Workflow() {
   useEffect(() => {
     if (withPermission === true && pendingMessage.current) {
       sendMessage(pendingMessage.current);
-      console.log(
-        "✅ Permission OK, message envoyé >>>",
-        pendingMessage.current
-      );
-      pendingMessage.current = null; // on vide après envoi
+      // console.log("message sent  >>>", pendingMessage.current);
+      pendingMessage.current = null;
     } else if (withPermission === false && pendingMessage.current) {
-      console.log("❌ Permission refusée, message annulé.");
+      // console.log("Permission denied, message canceled.");
       pendingMessage.current = null;
     }
   }, [withPermission]);

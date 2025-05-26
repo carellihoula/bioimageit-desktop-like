@@ -45,6 +45,7 @@ interface PywebviewApiBridge {
   ): Promise<SaveWorkflowResult>;
   launchCodeServer: () => Promise<any>;
   getStatus: () => Promise<string>;
+  getHomePath: () => Promise<string>;
 }
 
 // Declare the Window global interface extension

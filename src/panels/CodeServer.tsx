@@ -3,11 +3,21 @@ import { useEffect, useState } from "react";
 
 export const CodeServer = () => {
   const [status, setStatus] = useState("idle");
-  console.log("status: ", status);
+  const [ready, setReady] = useState(false);
+
+  console.log("Status codeserver", status);
+
   useEffect(() => {
     const interval = setInterval(() => {
+      if (status === "ready") return;
       if (window.pywebview?.api?.getStatus) {
-        window.pywebview.api.getStatus().then(setStatus);
+        window.pywebview.api.getStatus().then((newStatus: string) => {
+          setStatus(newStatus);
+          if (newStatus === "ready") {
+            setReady(true);
+            clearInterval(interval);
+          }
+        });
       }
     }, 1000);
 
@@ -26,6 +36,7 @@ export const CodeServer = () => {
         </div>
       ) : status === "ready" ? (
         <iframe
+          key="code-server-iframe"
           id="code-server"
           title="Code Server"
           width="100%"
