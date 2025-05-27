@@ -35,6 +35,8 @@ import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
 import { useWorkflowStore } from "@/store/useWorkflowStore";
 import { useCodeServerStore } from "@/store/useCodeServerStore";
 import { useSocket } from "@/context/SocketContext";
+import { useValidConnection } from "@/hooks/workflow-ui/useValidConnection";
+import { CustomConnectionLine } from "@/components/Workflow-ui/CustomConnectionLine";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -54,7 +56,7 @@ export default function Workflow() {
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onRFEdgesChange] = useEdgesState<Edge>([]);
-
+  const isValidConnection = useValidConnection();
   async function launchCodeServer() {
     const result = await window?.pywebview?.api.launchCodeServer();
     // console.log(result);
@@ -329,6 +331,8 @@ export default function Workflow() {
         onNodeDragStart={() => setCtx(null)}
         onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}
+        isValidConnection={isValidConnection}
+        connectionLineComponent={CustomConnectionLine}
       >
         <Controls />
 
