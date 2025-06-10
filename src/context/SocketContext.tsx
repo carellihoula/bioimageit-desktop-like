@@ -16,6 +16,7 @@ interface SocketContextProps {
   sendMessage: (msg: string) => void;
   messages: any;
   withPermission: boolean | null;
+  setWithPermission: React.Dispatch<React.SetStateAction<boolean | null>>;
   connectionStatus: "connected" | "disconnected" | "reconnecting";
 }
 
@@ -23,6 +24,7 @@ const SocketContext = createContext<SocketContextProps>({
   sendMessage: () => {},
   messages: [],
   withPermission: false,
+  setWithPermission: () => {},
   connectionStatus: "disconnected",
 });
 
@@ -157,7 +159,13 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
 
   return (
     <SocketContext.Provider
-      value={{ sendMessage, messages, connectionStatus, withPermission }}
+      value={{
+        sendMessage,
+        messages,
+        connectionStatus,
+        withPermission,
+        setWithPermission,
+      }}
     >
       {children}
     </SocketContext.Provider>

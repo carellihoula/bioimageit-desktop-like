@@ -2,8 +2,8 @@ import { Spinner } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 export const CodeServer = () => {
-  const [status, setStatus] = useState("idle");
-  const [ready, setReady] = useState(false);
+  const [status, setStatus] = useState("starting");
+  // const [ready, setReady] = useState(false);
 
   console.log("Status codeserver", status);
 
@@ -14,7 +14,7 @@ export const CodeServer = () => {
         window.pywebview.api.getStatus().then((newStatus: string) => {
           setStatus(newStatus);
           if (newStatus === "ready") {
-            setReady(true);
+            // setReady(true);
             clearInterval(interval);
           }
         });

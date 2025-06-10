@@ -52,6 +52,7 @@ export default function Workflow() {
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
   const pendingMessage = useRef<string | null>(null);
   const { sendMessage, withPermission } = useSocket();
+  // console.log("withPermission", withPermission);
   // console.log("selected Path: ", selectedPath);
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
