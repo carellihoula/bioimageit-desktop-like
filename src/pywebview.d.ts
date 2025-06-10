@@ -43,6 +43,9 @@ interface PywebviewApiBridge {
     path: string,
     graph: ReactFlowJsonObject<Node, Edge>
   ): Promise<SaveWorkflowResult>;
+  launchCodeServer: () => void;
+  getStatus: () => Promise<string>;
+  getHomePath: () => Promise<string>;
 }
 
 // Declare the Window global interface extension

@@ -1,5 +1,7 @@
+import { DuplicateWorkflowResponse } from "@/types";
+
 export async function fetchWorkflows(): Promise<string[]> {
-  const response = await fetch("http://localhost:8000/api/workflows");
+  const response = await fetch("http://localhost:8000/api/workflows/");
   const data: string[] = await response.json();
   return data;
 }
@@ -61,7 +63,7 @@ export async function duplicateWorkflow({
   source_path,
   target_parent_path,
   target_name,
-}: DuplicateWorkflowParams): Promise<any> {
+}: DuplicateWorkflowParams): Promise<DuplicateWorkflowResponse> {
   const API_URL = "http://localhost:8000/api/workflows/duplicate";
 
   const response = await fetch(API_URL, {

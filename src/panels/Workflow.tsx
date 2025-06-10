@@ -33,6 +33,10 @@ import { ContextMenu } from "@/components/Workflow-ui/ContextMenu";
 import { ToolInfo } from "@/types";
 import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
 import { useWorkflowStore } from "@/store/useWorkflowStore";
+import { useCodeServerStore } from "@/store/useCodeServerStore";
+import { useSocket } from "@/context/SocketContext";
+import { useValidConnection } from "@/hooks/workflow-ui/useValidConnection";
+import { CustomConnectionLine } from "@/components/Workflow-ui/CustomConnectionLine";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -46,10 +50,19 @@ export default function Workflow() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
-  console.log("selected Path: ", selectedPath);
+  const pendingMessage = useRef<string | null>(null);
+  const { sendMessage, withPermission } = useSocket();
+  // console.log("withPermission", withPermission);
+  // console.log("selected Path: ", selectedPath);
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onRFEdgesChange] = useEdgesState<Edge>([]);
+  const isValidConnection = useValidConnection();
+  async function launchCodeServer() {
+    const result = await window?.pywebview?.api.launchCodeServer();
+    // console.log(result);
+    // alert("Code-server status: " + result.status);
+  }
 
   useCopyPaste(rfInstance);
   const { init, push, undo, redo } = useFlowHistory();
@@ -64,9 +77,10 @@ export default function Workflow() {
           selectedPath ?? ""
         );
         console.log("Réponse loadWorkflow", flow);
+        console.log("Réponse loadWorkflow", selectedPath);
 
         if (!flow || !flow.success) {
-          console.error("Loading failed:", flow?.error);
+          // console.error("Loading failed:", flow?.error);
           init([], []);
           return;
         }
@@ -181,16 +195,68 @@ export default function Workflow() {
     setCtx(null);
   }, [ctx, setNodes]);
 
-  const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
+  //
+  const sendFileMessage = useCallback(
+    (filePath: string) => {
+      const message = {
+        topic: "open_file",
+        action: "publish",
+        message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+      };
+      sendMessage(JSON.stringify(message));
+      console.log("message sent  >>>", JSON.stringify(message));
+    },
+    [sendMessage]
+  );
+
+  const handleAction = async (
+    action: (typeof contextMenu)[number]["action"]
+  ) => {
+    if (!ctx) return;
     if (action === "duplicate") {
       duplicateNode();
     } else if (action === "delete") {
       deleteNode();
     } else if (action === "edit") {
-      alert("open code-server");
+      const tool = ctx.node.data.tool as ToolInfo;
+      // console.log("node: ", tool.module_path);
+
+      const codeServerStore = useCodeServerStore.getState();
+      if (!codeServerStore.isOpen) {
+        codeServerStore.openPanel();
+
+        launchCodeServer();
+      }
+      const filePath = tool.module_path?.replace(/\./g, "/") + ".py";
+      if (withPermission) {
+        sendFileMessage(filePath);
+      } else {
+        // Otherwise, request permission and store the message
+        const permission = {
+          action: "wait_for_permission",
+          topic: "open_file",
+        };
+        pendingMessage.current = JSON.stringify({
+          topic: "open_file",
+          action: "publish",
+          message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+        });
+        sendMessage(JSON.stringify(permission));
+      }
     }
     setCtx(null);
   };
+
+  useEffect(() => {
+    if (withPermission === true && pendingMessage.current) {
+      sendMessage(pendingMessage.current);
+      // console.log("message sent  >>>", pendingMessage.current);
+      pendingMessage.current = null;
+    } else if (withPermission === false && pendingMessage.current) {
+      // console.log("Permission denied, message canceled.");
+      pendingMessage.current = null;
+    }
+  }, [withPermission]);
 
   // global click to close menu
   useEffect(() => {
@@ -266,6 +332,8 @@ export default function Workflow() {
         onNodeDragStart={() => setCtx(null)}
         onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}
+        isValidConnection={isValidConnection}
+        connectionLineComponent={CustomConnectionLine}
       >
         <Controls />
 
