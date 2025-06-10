@@ -95,3 +95,9 @@ export interface ITreeItem {
   children?: ITreeItem[];
   tool?: ToolInfo;
 }
+
+export interface DuplicateWorkflowResponse {
+  message?: string;
+  path?: string;
+  error?: string;
+}

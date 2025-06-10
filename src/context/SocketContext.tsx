@@ -6,7 +6,7 @@ import React, {
   ReactNode,
   useRef,
 } from "react";
-import { NodeData } from "../types";
+// import { NodeData } from "../types";
 
 // interface PERMIT{
 //   message: boolean
