@@ -23,7 +23,7 @@ const DockMaximizeCloseControlsBase = (props: IDockviewHeaderActionsProps) => {
     <div className="flex items-center space-x-1 pr-2 h-full custom-window-controls">
       <button
         onClick={handleMaximizeRestoreWindow}
-        className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded"
+        className="p-1 dv-fg dv-icon-hover rounded"
         aria-label={"Maximize/Restore Window"}
         title={"Maximize/Restore Window"}
       >
@@ -34,7 +34,7 @@ const DockMaximizeCloseControlsBase = (props: IDockviewHeaderActionsProps) => {
 
       <button
         onClick={handleCloseWindow}
-        className="p-1 hover:bg-red-500 hover:text-white dark:hover:bg-red-600 rounded"
+        className="p-1 dv-fg dv-icon-hover rounded"
         aria-label="Close Window"
         title="Close Window"
       >
