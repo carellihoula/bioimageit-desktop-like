@@ -57,3 +57,7 @@ body {
 .dv-shadow {
   box-shadow: var(--dialog-box-shadow);
 }
+
+.dv-icon-hover:hover {
+  background-color: var(--dv-icon-hover-background-color);
+}

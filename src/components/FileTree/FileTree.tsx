@@ -84,7 +84,7 @@ export default function FileTree({ search }: { search: string }) {
  * @returns Promise that resolves to an array of tree items
  */
 async function fetchTools(): Promise<ITreeItem[]> {
-  const response = await fetch("http://localhost:8000/api/tools");
+  const response = await fetch("http://localhost:8000/api/tools/");
   const data: ToolInfo[] = await response.json();
   return buildTreeFromTools(data);
 }

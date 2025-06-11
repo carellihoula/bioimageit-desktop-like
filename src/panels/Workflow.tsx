@@ -32,6 +32,11 @@ import { contextMenu } from "@/lib/const";
 import { ContextMenu } from "@/components/Workflow-ui/ContextMenu";
 import { ToolInfo } from "@/types";
 import { transformLabelFromPath } from "@/lib/transformLabelFromPath";
+import { useWorkflowStore } from "@/store/useWorkflowStore";
+import { useCodeServerStore } from "@/store/useCodeServerStore";
+import { useSocket } from "@/context/SocketContext";
+import { useValidConnection } from "@/hooks/workflow-ui/useValidConnection";
+import { CustomConnectionLine } from "@/components/Workflow-ui/CustomConnectionLine";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -44,45 +49,83 @@ export default function Workflow() {
   );
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
-
+  const selectedPath = useWorkflowStore((state) => state.selectedPath);
+  const pendingMessage = useRef<string | null>(null);
+  const { sendMessage, withPermission } = useSocket();
+  // console.log("withPermission", withPermission);
+  // console.log("selected Path: ", selectedPath);
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onRFEdgesChange] = useEdgesState<Edge>([]);
+  const isValidConnection = useValidConnection();
+  async function launchCodeServer() {
+    const result = await window?.pywebview?.api.launchCodeServer();
+    // console.log(result);
+    // alert("Code-server status: " + result.status);
+  }
 
   useCopyPaste(rfInstance);
   const { init, push, undo, redo } = useFlowHistory();
 
-  // init flow history
-  const onInit = useCallback(
-    (instance: ReactFlowInstance) => {
-      setRfInstance(instance);
+  // Load workflow when selectedPath changes
+  useEffect(() => {
+    if (!selectedPath || !rfInstance) return;
 
-      const saved = localStorage.getItem("flow");
-      if (!saved) {
-        init([], []);
-        return;
-      }
-
+    async function load() {
       try {
-        const flow = JSON.parse(saved);
-        instance.setNodes(flow.nodes || []);
-        instance.setEdges(flow.edges || []);
-        instance.setViewport(flow.viewport || { x: 0, y: 0, zoom: 1 });
-        init(flow.nodes || [], flow.edges || []);
-      } catch {
-        console.warn("Flow data corrupted, start empty");
+        const flow = await window.pywebview?.api.loadWorkflow(
+          selectedPath ?? ""
+        );
+        console.log("Réponse loadWorkflow", flow);
+        console.log("Réponse loadWorkflow", selectedPath);
+
+        if (!flow || !flow.success) {
+          // console.error("Loading failed:", flow?.error);
+          init([], []);
+          return;
+        }
+
+        const data = flow.data;
+        rfInstance?.setNodes(data?.nodes ?? []);
+        rfInstance?.setEdges(data?.edges ?? []);
+        rfInstance?.setViewport(data?.viewport ?? { x: 0, y: 0, zoom: 1 });
+        init(data?.nodes ?? [], data?.edges ?? []);
+      } catch (err) {
+        console.error("JS error in loadWorkflow", err);
         init([], []);
       }
-    },
-    [init]
-  );
+    }
+
+    load();
+  }, [selectedPath, rfInstance, init]);
+
+  // Save flow on nodes or edges change
+  useEffect(() => {
+    if (!rfInstance || !selectedPath) return;
+
+    async function save() {
+      try {
+        const flow = rfInstance?.toObject();
+        await window.pywebview?.api.saveWorkflow(selectedPath ?? "", flow);
+      } catch (err) {
+        console.error("Failed to save workflow", err);
+      }
+    }
+
+    save();
+  }, [nodes, edges, rfInstance, selectedPath]);
+
+  // init flow history
+  const onInit = useCallback((instance: ReactFlowInstance) => {
+    setRfInstance(instance);
+  }, []);
 
   // save flow to localStorage on change
-  useEffect(() => {
-    if (!rfInstance) return;
-    const flow = rfInstance.toObject();
-    localStorage.setItem("flow", JSON.stringify(flow));
-  }, [nodes, edges, rfInstance]);
+  // useEffect(() => {
+  //   if (!rfInstance) return;
+  //   const flow = rfInstance.toObject();
+  //   localStorage.setItem("flow", JSON.stringify(flow));
+  // }, [nodes, edges, rfInstance]);
 
   // context menu state
   const [ctx, setCtx] = useState<{
@@ -152,16 +195,68 @@ export default function Workflow() {
     setCtx(null);
   }, [ctx, setNodes]);
 
-  const handleAction = (action: (typeof contextMenu)[number]["action"]) => {
+  //
+  const sendFileMessage = useCallback(
+    (filePath: string) => {
+      const message = {
+        topic: "open_file",
+        action: "publish",
+        message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+      };
+      sendMessage(JSON.stringify(message));
+      console.log("message sent  >>>", JSON.stringify(message));
+    },
+    [sendMessage]
+  );
+
+  const handleAction = async (
+    action: (typeof contextMenu)[number]["action"]
+  ) => {
+    if (!ctx) return;
     if (action === "duplicate") {
       duplicateNode();
     } else if (action === "delete") {
       deleteNode();
     } else if (action === "edit") {
-      alert("open code-server");
+      const tool = ctx.node.data.tool as ToolInfo;
+      // console.log("node: ", tool.module_path);
+
+      const codeServerStore = useCodeServerStore.getState();
+      if (!codeServerStore.isOpen) {
+        codeServerStore.openPanel();
+
+        launchCodeServer();
+      }
+      const filePath = tool.module_path?.replace(/\./g, "/") + ".py";
+      if (withPermission) {
+        sendFileMessage(filePath);
+      } else {
+        // Otherwise, request permission and store the message
+        const permission = {
+          action: "wait_for_permission",
+          topic: "open_file",
+        };
+        pendingMessage.current = JSON.stringify({
+          topic: "open_file",
+          action: "publish",
+          message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+        });
+        sendMessage(JSON.stringify(permission));
+      }
     }
     setCtx(null);
   };
+
+  useEffect(() => {
+    if (withPermission === true && pendingMessage.current) {
+      sendMessage(pendingMessage.current);
+      // console.log("message sent  >>>", pendingMessage.current);
+      pendingMessage.current = null;
+    } else if (withPermission === false && pendingMessage.current) {
+      // console.log("Permission denied, message canceled.");
+      pendingMessage.current = null;
+    }
+  }, [withPermission]);
 
   // global click to close menu
   useEffect(() => {
@@ -237,6 +332,8 @@ export default function Workflow() {
         onNodeDragStart={() => setCtx(null)}
         onNodeDragStop={onNodeDragStop}
         onNodeContextMenu={onNodeContextMenu}
+        isValidConnection={isValidConnection}
+        connectionLineComponent={CustomConnectionLine}
       >
         <Controls />
 
