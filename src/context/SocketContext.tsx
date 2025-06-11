@@ -1,3 +1,4 @@
+import { NodeData } from "@/types";
 import React, {
   createContext,
   useState,
@@ -14,7 +15,7 @@ import React, {
 
 interface SocketContextProps {
   sendMessage: (msg: string) => void;
-  messages: any;
+  messages: NodeData[];
   withPermission: boolean | null;
   setWithPermission: React.Dispatch<React.SetStateAction<boolean | null>>;
   connectionStatus: "connected" | "disconnected" | "reconnecting";
@@ -46,7 +47,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
   url,
 }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<any>([]);
+  const [messages, setMessages] = useState<NodeData[]>([]);
   const [withPermission, setWithPermission] = useState<boolean | null>(null);
 
   // const [wait]
@@ -96,13 +97,24 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
         // console.log("Raw message received:", rawMessage);
         try {
           const jsonData = JSON.parse(rawMessage);
+          const messageParsed = JSON.parse(jsonData.message);
+          console.log("Parsed jsonData:", jsonData);
+          console.log("jsonData.message:", jsonData.message);
+          console.log("jsonData.message type:", typeof messageParsed);
+          console.log(
+            "jsonData.message keys:",
+            jsonData.message ? Object.keys(jsonData.message) : "null"
+          );
           if (jsonData.action === "wait_for_permission") {
             setWithPermission(jsonData.message); // met à jour true/false
             console.log("Permission reçue:", jsonData.message);
           } else if (jsonData.topic === "table_data") {
             // to be modified later
-            setMessages((prev) => [...prev, jsonData.message]);
-            // console.log("data :", jsonData.message);
+            setMessages((prev: NodeData[]) => [
+              ...prev,
+              JSON.parse(jsonData.message),
+            ]);
+            console.log("data from jsonData :", jsonData.message);
           } else {
             // to be modified later
             // setMessages((prev) => [...prev, rawMessage]);

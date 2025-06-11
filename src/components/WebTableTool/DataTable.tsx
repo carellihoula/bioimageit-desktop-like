@@ -7,9 +7,15 @@ import { ThumbnailCell } from "./ThumbnailCell";
 // Dynamically builds and renders the table based on the node's content type.
 export const DataTable: React.FC<DataTableProps> = ({ selectedNode }) => {
   // const { sendMessage } = useSocket();
-  // const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
-  const hasData = selectedNode.results.length > 0;
 
+  // const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  console.log("selectedNode:", selectedNode);
+  console.log("selectedNode node:", selectedNode.node);
+  console.log("selectedNode results:", selectedNode.results);
+
+  const hasData = selectedNode.results.length > 0;
+  // const hasData = selectedNode["results"].length > 0;
+  // console.log("selectedNode:", selectedNode);
   // Check if the node is of type "List files"
   const isListFiles = selectedNode.node === "List files";
 
@@ -76,7 +82,7 @@ export const DataTable: React.FC<DataTableProps> = ({ selectedNode }) => {
       }
       return filtered;
     });
-  }, [selectedNode.results, isListFiles, isImageNode, hasData]);
+  }, [selectedNode, isListFiles, isImageNode, hasData]);
 
   // Define table columns based on node type
   const columns = useMemo<MRT_ColumnDef<(typeof tableData)[number]>[]>(() => {
@@ -138,29 +144,30 @@ export const DataTable: React.FC<DataTableProps> = ({ selectedNode }) => {
   }, [selectedNode, isListFiles, isImageNode, tableData, hasData]);
 
   return (
-    <div className="w-full h-full overflow-hidden">
-      <MaterialReactTable
-        columns={columns}
-        data={tableData}
-        muiTableContainerProps={{
-          sx: {
-            height: "100%",
-          },
-        }}
-        muiTableBodyProps={{
-          sx: {
-            height: "100%",
-          },
-        }}
-        muiTablePaperProps={{
-          sx: {
-            height: "100%",
-          },
-        }}
-        // enableRowSelection
-        // state={{ rowSelection }}
-        // onRowSelectionChange={setRowSelection}
-      />
-    </div>
+    <MaterialReactTable
+      columns={columns}
+      data={tableData}
+      enablePagination={false}
+      enableRowVirtualization
+      // muiTableContainerProps={{
+      //   sx: {
+      //     maxHeight: "100%",
+      //     // Example: 'calc(100vh - 200px)' to adapt to window height minus headers/footers
+      //   },
+      // }}
+      // paginationDisplayMode="pages" // Or 'default'
+      // initialState={{
+      //   density: "comfortable", // Less vertical space per row
+      //   pagination: { pageSize: , pageIndex: 0 }, // Display more rows per page
+      //   // showGlobalFilter: true, // If you want a global filter
+      // }}
+      // muiPaginationProps={{
+      //   rowsPerPageOptions: [5, 25, 50, 100, 200],
+      // }}
+      // enableRowSelection
+      // state={{ rowSelection }}
+      // onRowSelectionChange={setRowSelection}
+      // state={{ isLoading: !columns || columns.length === 0 }}
+    />
   );
 };
