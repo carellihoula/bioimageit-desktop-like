@@ -97,14 +97,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
         // console.log("Raw message received:", rawMessage);
         try {
           const jsonData = JSON.parse(rawMessage);
-          const messageParsed = JSON.parse(jsonData.message);
-          console.log("Parsed jsonData:", jsonData);
-          console.log("jsonData.message:", jsonData.message);
-          console.log("jsonData.message type:", typeof messageParsed);
-          console.log(
-            "jsonData.message keys:",
-            jsonData.message ? Object.keys(jsonData.message) : "null"
-          );
           if (jsonData.action === "wait_for_permission") {
             setWithPermission(jsonData.message); // met à jour true/false
             console.log("Permission reçue:", jsonData.message);
@@ -114,7 +106,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
               ...prev,
               JSON.parse(jsonData.message),
             ]);
-            console.log("data from jsonData :", jsonData.message);
+            // console.log("data from jsonData :", jsonData.message);
           } else {
             // to be modified later
             // setMessages((prev) => [...prev, rawMessage]);

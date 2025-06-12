@@ -9,13 +9,9 @@ export const DataTable: React.FC<DataTableProps> = ({ selectedNode }) => {
   // const { sendMessage } = useSocket();
 
   // const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
-  console.log("selectedNode:", selectedNode);
-  console.log("selectedNode node:", selectedNode.node);
-  console.log("selectedNode results:", selectedNode.results);
 
   const hasData = selectedNode.results.length > 0;
-  // const hasData = selectedNode["results"].length > 0;
-  // console.log("selectedNode:", selectedNode);
+
   // Check if the node is of type "List files"
   const isListFiles = selectedNode.node === "List files";
 
