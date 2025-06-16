@@ -82,7 +82,7 @@ export const WorkflowManager = () => {
             // setPaths([...paths, result.path]);
           }
         } else if (result.error) {
-          alert(`Erreur lors de l'ouverture du workflow: ${result.error}`);
+          alert(`Error opening workflow: ${result.error}`);
         }
       } catch (error) {
         alert(`Erreur JavaScript: ${error}`);
