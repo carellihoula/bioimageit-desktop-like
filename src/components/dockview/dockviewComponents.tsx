@@ -3,7 +3,7 @@ import { ExecutionControls } from "@/panels/ExecutionControls";
 import { LogsPanel } from "@/panels/LogsPanel";
 import { Properties } from "@/panels/Properties";
 import { Tools } from "@/panels/Tools";
-import { WebTableTool } from "@/panels/WebTableTool";
+import WebTableTool from "@/panels/WebTableTool";
 import Workflow from "@/panels/Workflow";
 import { WorkflowManager } from "@/panels/WorkflowManager";
 import { IDockviewPanelProps } from "dockview";
@@ -29,8 +29,7 @@ export const components = {
       case "logstool":
         return <LogsPanel />;
       default:
-        return <div>Panel inconnu</div>;
+        return <div>Unknown Panel</div>;
     }
   },
-  // tab: (props: IDockviewPanelProps) => <PanelTitleBar {...props} />,
 };

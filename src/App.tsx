@@ -5,6 +5,7 @@ import { MainMenuBar } from "./components/common/MainMenuBar";
 import { dockviewThemes } from "./components/common/DockviewThemeSelector";
 import { DockMaximizeCloseControls } from "./components/common/DockMaximizeCloseControls";
 import MainDialogContent from "./components/dialogs/MainDialogContent";
+// import { useComponents } from "./components/dockview/dockviewComponents";
 import { components } from "./components/dockview/dockviewComponents";
 import { dockviewOnReady } from "./components/dockview/dockviewOnReady";
 
@@ -18,6 +19,7 @@ const App: React.FC = () => {
   // Panel columnHook to track window width
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [theme, setTheme] = useState(dockviewThemes[0].theme);
+  // const components = useComponents();
 
   // Each time the `theme` changes, we apply its className to <html>.
   // Each time the theme changes, we (re)apply the class to html
