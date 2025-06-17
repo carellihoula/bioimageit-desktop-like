@@ -5,11 +5,13 @@ import { DeleteWorkflowDialog } from "./DeleteWorkflowDialog";
 import { CreateWorkflowDialog } from "./CreateWorkflowDialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  createTool,
   createWorkflow,
   deleteWorkflow,
   renameWorkflow,
 } from "@/api/workflow/workflowApi";
 import { useDialogStore } from "@/store/useDialogStore";
+import { CreateToolDialog } from "./CreateToolDialog";
 
 function MainDialogContent() {
   const { isOpen, type, workflow, closeDialog } = useDialogStore();
@@ -24,6 +26,14 @@ function MainDialogContent() {
   });
   const createMutattion = useMutation({
     mutationFn: createWorkflow,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getWorkflows"] });
+      closeDialog();
+    },
+    // onError: (error: any) => {},
+  });
+  const createToolMutation = useMutation({
+    mutationFn: createTool,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getWorkflows"] });
       closeDialog();
@@ -68,6 +78,14 @@ function MainDialogContent() {
           onCancel={closeDialog}
           onCreate={(workflowName, path) =>
             createMutattion.mutate({ name: workflowName, path })
+          }
+        />
+      )}
+      {type === "create-tool" && (
+        <CreateToolDialog
+          onCancel={closeDialog}
+          onCreate={(filename: string, folder: string) =>
+            createToolMutation.mutate({ filename, folder })
           }
         />
       )}

@@ -1,5 +1,6 @@
 import { SearchBar } from "@/components/common/SearchBar";
 import FileTree from "@/components/FileTree/FileTree";
+import { useDialogStore } from "@/store/useDialogStore";
 import { Button } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -11,6 +12,7 @@ import { useState } from "react";
 
 export function Tools() {
   const [searchTerm, setSearchTerm] = useState("");
+  const { openDialog } = useDialogStore();
   return (
     <div className="flex flex-col gap-2 h-full">
       <div className=" flex justify-center items-center mt-2 w-full">
@@ -25,6 +27,7 @@ export function Tools() {
           _hover={{
             bg: "dvHoverBg",
           }}
+          onClick={() => openDialog("create-tool")}
         >
           Create Tool
         </Button>

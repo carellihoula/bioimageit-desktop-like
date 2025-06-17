@@ -92,3 +92,24 @@ export async function duplicateWorkflow({
 
   return responseData;
 }
+
+export async function createTool({
+  filename,
+  folder,
+}: {
+  filename: string;
+  folder: string;
+}) {
+  const response = await fetch("http://localhost:8000/api/tools", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ filename, folder }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(error || "Failed to create tool");
+  }
+
+  return await response.json();
+}

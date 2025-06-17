@@ -2,9 +2,12 @@ import { create } from "zustand";
 
 interface DialogState {
   isOpen: boolean;
-  type: "rename" | "delete" | "create" | null;
+  type: "rename" | "delete" | "create" | "create-tool" | null;
   workflow: string | null;
-  openDialog: (type: "rename" | "delete" | "create", workflow?: string) => void;
+  openDialog: (
+    type: "rename" | "delete" | "create" | "create-tool",
+    workflow?: string
+  ) => void;
   closeDialog: () => void;
 }
 
