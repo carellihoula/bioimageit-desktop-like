@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Input, Button, VStack } from "@chakra-ui/react";
+import { useWorkflowStore } from "@/store/useWorkflowStore";
 
 export const RenameWorkflowDialog = ({
   workflow,
@@ -10,6 +11,7 @@ export const RenameWorkflowDialog = ({
   onRename: (newName: string) => void;
   onCancel: () => void;
 }) => {
+  const setSelectedPath = useWorkflowStore((state) => state.setSelectedPath);
   const [newName, setNewName] = useState(workflow);
 
   return (
@@ -19,7 +21,13 @@ export const RenameWorkflowDialog = ({
         onChange={(e) => setNewName(e.target.value)}
         placeholder="New name"
       />
-      <Button onClick={() => onRename(newName)} disabled={!newName}>
+      <Button
+        onClick={() => {
+          onRename(newName);
+          setSelectedPath(newName);
+        }}
+        disabled={!newName}
+      >
         Rename
       </Button>
       <Button onClick={onCancel} variant="ghost">
