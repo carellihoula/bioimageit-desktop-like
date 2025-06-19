@@ -95,15 +95,15 @@ export async function duplicateWorkflow({
 
 export async function createTool({
   filename,
-  folder,
+  current_workflow,
 }: {
   filename: string;
-  folder: string;
+  current_workflow: string;
 }) {
-  const response = await fetch("http://localhost:8000/api/tools", {
+  const response = await fetch("http://localhost:8000/api/tools/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ filename, folder }),
+    body: JSON.stringify({ filename, current_workflow }),
   });
 
   if (!response.ok) {

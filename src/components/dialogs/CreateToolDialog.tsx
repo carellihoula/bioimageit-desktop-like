@@ -1,46 +1,41 @@
 import { useState } from "react";
 import { Input, Button, VStack } from "@chakra-ui/react";
+import { useWorkflowStore } from "@/store/useWorkflowStore";
 
 export const CreateToolDialog = ({
   onCancel,
   onCreate,
 }: {
-  onCreate: (filename: string, folder: string) => void;
+  onCreate: (filename: string, current_workflow: string) => void;
   onCancel: () => void;
 }) => {
-  const [newTool, setNewTool] = useState({
-    folder: "",
-    filename: "",
-  });
+  const selectedPath = useWorkflowStore((state) => state.selectedPath);
+  const [newTool, setNewTool] = useState("");
 
   const handleChangeNewTool = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewTool((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setNewTool(e.target.value);
   };
 
   return (
     <VStack align="stretch">
       <Input
         type="text"
-        value={newTool.folder}
-        name="folder"
+        readOnly
+        defaultValue={selectedPath ?? "no path exists"}
         placeholder="New Tool Folder"
         onChange={handleChangeNewTool}
+        disabled
         color={"dvForeground"}
       />
       <Input
         type="text"
-        value={newTool.filename}
-        name="filename"
+        value={newTool}
         onChange={handleChangeNewTool}
         placeholder="New Tool Name"
       />
       <Button
-        onClick={() => onCreate(newTool.filename, newTool.folder)}
-        disabled={!newTool.folder || !newTool.filename}
+        onClick={() => onCreate(newTool, selectedPath || "")}
+        disabled={!newTool || !selectedPath}
       >
         Create
       </Button>

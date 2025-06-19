@@ -184,7 +184,7 @@ export default function Workflow() {
     setNodes((nds) => {
       const copy = {
         ...ctx.node,
-        id: Math.random().toString(16).slice(2),
+        id: crypto.randomUUID(),
         position: {
           x: ctx.node.position.x + 20,
           y: ctx.node.position.y + 20,
@@ -298,7 +298,7 @@ export default function Workflow() {
       };
 
       const newNode: Node = {
-        id: `${tool.name}-${Date.now()}`,
+        id: `${tool.name}-${crypto.randomUUID()}`,
         type: "io",
         position,
         data: {

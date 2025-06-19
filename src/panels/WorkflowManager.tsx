@@ -34,8 +34,23 @@ export const WorkflowManager = () => {
 
   // When data changes, we update the global list
   useEffect(() => {
-    if (data) setPaths(data);
-  }, [data, setPaths]);
+    if (data) {
+      setPaths(data);
+      if (!selectedPath && data.length > 0) {
+        const lastUsed = localStorage.getItem("lastWorkflowPath");
+
+        if (lastUsed && data.includes(lastUsed)) {
+          setSelectedPath(lastUsed);
+        }
+        if (data.length === 0) {
+          setSelectedPath(null);
+          localStorage.removeItem("lastWorkflowPath");
+        } else {
+          setSelectedPath(data[0]);
+        }
+      }
+    }
+  }, [data, selectedPath, setPaths, setSelectedPath]);
 
   const { openDialog } = useDialogStore();
 
@@ -169,7 +184,10 @@ export const WorkflowManager = () => {
               bg={selectedPath === path ? "dvHoverBg" : "transparent"}
               _hover={{ bg: "dvHoverBg" }}
               // onClick={() => setSelected(path)}
-              onClick={() => setSelectedPath(path)}
+              onClick={() => {
+                setSelectedPath(path);
+                localStorage.setItem("lastWorkflowPath", path);
+              }}
             >
               {path}
             </Text>
