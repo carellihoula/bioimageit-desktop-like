@@ -10,22 +10,30 @@ export const CreateToolDialog = ({
   onCancel: () => void;
 }) => {
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
+  // const setSelectedPath = useWorkflowStore((state) => state.setSelectedPath);
   const [newTool, setNewTool] = useState("");
 
   const handleChangeNewTool = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTool(e.target.value);
   };
 
+  const getDisplayPath = () => {
+    if (!selectedPath) {
+      return "No workflow selected";
+    }
+    return selectedPath;
+  };
+
   return (
     <VStack align="stretch">
       <Input
         type="text"
-        readOnly
-        defaultValue={selectedPath ?? "no path exists"}
+        fontSize="sm"
+        value={getDisplayPath()}
         placeholder="New Tool Folder"
-        onChange={handleChangeNewTool}
+        // onChange={handleChangeNewTool}
         disabled
-        color={"dvForeground"}
+        color={selectedPath ? "dvForeground" : "red.400"}
       />
       <Input
         type="text"

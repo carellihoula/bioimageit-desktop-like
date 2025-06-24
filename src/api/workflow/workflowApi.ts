@@ -100,16 +100,21 @@ export async function createTool({
   filename: string;
   current_workflow: string;
 }) {
-  const response = await fetch("http://localhost:8000/api/tools/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ filename, current_workflow }),
-  });
+  try {
+    const response = await fetch("http://localhost:8000/api/tools/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename, current_workflow }),
+    });
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || "Failed to create tool");
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error || "Failed to create tool");
+    }
+
+    return await response.json();
+  } catch (error) {
+    // throw new Error();
+    alert(`Failed to create tool: ${error}`);
   }
-
-  return await response.json();
 }

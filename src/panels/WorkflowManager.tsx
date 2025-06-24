@@ -32,21 +32,27 @@ export const WorkflowManager = () => {
   // console.log("selectedName", selectedName);
   const targetParentPath = selectedPath?.split("/").slice(0, -1).join("/");
 
-  // When data changes, we update the global list
   useEffect(() => {
     if (data) {
       setPaths(data);
-      if (!selectedPath && data.length > 0) {
-        const lastUsed = localStorage.getItem("lastWorkflowPath");
 
-        if (lastUsed && data.includes(lastUsed)) {
-          setSelectedPath(lastUsed);
-        }
+      // If we don't have a selectedPath or if the current selectedPath no longer exists in the list
+      if (!selectedPath || !data.includes(selectedPath)) {
         if (data.length === 0) {
+          // No workflow available
           setSelectedPath(null);
           localStorage.removeItem("lastWorkflowPath");
         } else {
-          setSelectedPath(data[0]);
+          // There are available workflows, select the first one or the last used
+          const lastUsed = localStorage.getItem("lastWorkflowPath");
+
+          if (lastUsed && data.includes(lastUsed)) {
+            setSelectedPath(lastUsed);
+          } else {
+            // Select the first available workflow
+            setSelectedPath(data[0]);
+            localStorage.setItem("lastWorkflowPath", data[0]);
+          }
         }
       }
     }
