@@ -32,10 +32,31 @@ export const WorkflowManager = () => {
   // console.log("selectedName", selectedName);
   const targetParentPath = selectedPath?.split("/").slice(0, -1).join("/");
 
-  // When data changes, we update the global list
   useEffect(() => {
-    if (data) setPaths(data);
-  }, [data, setPaths]);
+    if (data) {
+      setPaths(data);
+
+      // If we don't have a selectedPath or if the current selectedPath no longer exists in the list
+      if (!selectedPath || !data.includes(selectedPath)) {
+        if (data.length === 0) {
+          // No workflow available
+          setSelectedPath(null);
+          localStorage.removeItem("lastWorkflowPath");
+        } else {
+          // There are available workflows, select the first one or the last used
+          const lastUsed = localStorage.getItem("lastWorkflowPath");
+
+          if (lastUsed && data.includes(lastUsed)) {
+            setSelectedPath(lastUsed);
+          } else {
+            // Select the first available workflow
+            setSelectedPath(data[0]);
+            localStorage.setItem("lastWorkflowPath", data[0]);
+          }
+        }
+      }
+    }
+  }, [data, selectedPath, setPaths, setSelectedPath]);
 
   const { openDialog } = useDialogStore();
 
@@ -169,7 +190,10 @@ export const WorkflowManager = () => {
               bg={selectedPath === path ? "dvHoverBg" : "transparent"}
               _hover={{ bg: "dvHoverBg" }}
               // onClick={() => setSelected(path)}
-              onClick={() => setSelectedPath(path)}
+              onClick={() => {
+                setSelectedPath(path);
+                localStorage.setItem("lastWorkflowPath", path);
+              }}
             >
               {path}
             </Text>

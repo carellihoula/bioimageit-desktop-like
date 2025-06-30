@@ -1,7 +1,10 @@
 import { SearchBar } from "@/components/common/SearchBar";
+import { LargeIconButton } from "@/components/custom-ui/LargeIconButton";
 import FileTree from "@/components/FileTree/FileTree";
 import { useDialogStore } from "@/store/useDialogStore";
 import { Button } from "@chakra-ui/react";
+import { useQueryClient } from "@tanstack/react-query";
+import { RefreshCw } from "lucide-react";
 import { useState } from "react";
 
 /**
@@ -13,6 +16,7 @@ import { useState } from "react";
 export function Tools() {
   const [searchTerm, setSearchTerm] = useState("");
   const { openDialog } = useDialogStore();
+  const queryClient = useQueryClient();
   return (
     <div className="flex flex-col gap-2 h-full">
       <div className=" flex justify-center items-center mt-2 w-full">
@@ -32,12 +36,21 @@ export function Tools() {
           Create Tool
         </Button>
       </div>
-      <div className=" flex justify-center items-center w-full">
+      <div className="flex justify-center items-center w-full">
         <SearchBar
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           size="sm"
           placeholder="Search tools"
+        />
+      </div>
+      <div className="flex justify-center items-center w-full">
+        <LargeIconButton
+          label="Refresh Tools"
+          icon={<RefreshCw size={16} />}
+          onClick={() =>
+            queryClient.invalidateQueries({ queryKey: ["treeData"] })
+          }
         />
       </div>
 

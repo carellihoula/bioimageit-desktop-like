@@ -39,3 +39,22 @@ export const contextMenu: ContextMenuItem[] = [
   { label: "Duplicate Node", action: "duplicate" },
   { label: "Delete Node", action: "delete" },
 ];
+
+export const DialogTypes = [
+  {
+    type: "rename",
+    title: "Rename Workflow",
+  },
+  {
+    type: "delete",
+    title: "Delete Workflow",
+  },
+  {
+    type: "create",
+    title: "Create Workflow",
+  },
+  {
+    type: "create-tool",
+    title: "Create Tool",
+  },
+];

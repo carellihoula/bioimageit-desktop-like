@@ -4,7 +4,7 @@ interface WorkflowStore {
   paths: string[];
   selectedPath: string | null;
   setPaths: (paths: string[]) => void;
-  setSelectedPath: (path: string) => void;
+  setSelectedPath: (path: string | null) => void;
 }
 
 export const useWorkflowStore = create<WorkflowStore>((set) => ({

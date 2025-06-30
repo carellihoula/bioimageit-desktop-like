@@ -35,7 +35,7 @@ function MainDialogContent() {
   const createToolMutation = useMutation({
     mutationFn: createTool,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getWorkflows"] });
+      queryClient.invalidateQueries({ queryKey: ["treeData"] });
       closeDialog();
     },
     // onError: (error: any) => {},
@@ -84,8 +84,8 @@ function MainDialogContent() {
       {type === "create-tool" && (
         <CreateToolDialog
           onCancel={closeDialog}
-          onCreate={(filename: string, folder: string) =>
-            createToolMutation.mutate({ filename, folder })
+          onCreate={(filename: string, current_workflow: string) =>
+            createToolMutation.mutate({ filename, current_workflow })
           }
         />
       )}

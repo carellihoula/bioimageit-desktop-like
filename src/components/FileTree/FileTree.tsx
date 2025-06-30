@@ -6,15 +6,17 @@ import { buildTreeFromTools } from "./buildTreeFromTools";
 import { Spinner } from "@chakra-ui/react";
 import { CustomTreeItem } from "./CustomTreeItem";
 import React from "react";
+import { useWorkflowStore } from "@/store/useWorkflowStore";
 
 /**
  * FileTree component that displays a tree view of files and folders
  * with search functionality
  */
 export default function FileTree({ search }: { search: string }) {
+  const selectedPath = useWorkflowStore((state) => state.selectedPath);
   const { isPending, error, data } = useQuery<ITreeItem[]>({
     queryKey: ["treeData"],
-    queryFn: fetchTools,
+    queryFn: () => fetchTools(selectedPath),
   });
 
   // --- Memoize the filtered items ---
@@ -78,8 +80,10 @@ export default function FileTree({ search }: { search: string }) {
  * Fetches tool data from the API and builds a tree structure
  * @returns Promise that resolves to an array of tree items
  */
-async function fetchTools(): Promise<ITreeItem[]> {
-  const response = await fetch("http://localhost:8000/api/tools/");
+async function fetchTools(toolsWorkflow: string | null): Promise<ITreeItem[]> {
+  const response = await fetch(
+    `http://localhost:8000/api/tools/?toolsWorkflow=${toolsWorkflow}`
+  );
   const data: ToolInfo[] = await response.json();
   return buildTreeFromTools(data);
 }
