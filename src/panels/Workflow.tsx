@@ -37,6 +37,7 @@ import { useCodeServerStore } from "@/store/useCodeServerStore";
 import { useSocket } from "@/context/SocketContext";
 import { useValidConnection } from "@/hooks/workflow-ui/useValidConnection";
 import { CustomConnectionLine } from "@/components/Workflow-ui/CustomConnectionLine";
+import { getProjectPath } from "@/api/workflow/workflowApi";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -76,8 +77,8 @@ export default function Workflow() {
         const flow = await window.pywebview?.api.loadWorkflow(
           selectedPath ?? ""
         );
-        console.log("Réponse loadWorkflow", flow);
-        console.log("Réponse loadWorkflow", selectedPath);
+        // console.log("Réponse loadWorkflow", flow);
+        // console.log("Réponse loadWorkflow", selectedPath);
 
         if (!flow || !flow.success) {
           // console.error("Loading failed:", flow?.error);
@@ -197,14 +198,15 @@ export default function Workflow() {
 
   //
   const sendFileMessage = useCallback(
-    (filePath: string) => {
+    async (filePath: string) => {
+      const path = await getProjectPath();
       const message = {
         topic: "open_file",
         action: "publish",
-        message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+        message: `${path}/src/Tools/${filePath}`,
       };
       sendMessage(JSON.stringify(message));
-      console.log("message sent  >>>", JSON.stringify(message));
+      // console.log("message sent  >>>", JSON.stringify(message));
     },
     [sendMessage]
   );
@@ -228,6 +230,7 @@ export default function Workflow() {
         launchCodeServer();
       }
       const filePath = tool.module_path?.replace(/\./g, "/") + ".py";
+      const projectPath = await getProjectPath();
       if (withPermission) {
         sendFileMessage(filePath);
       } else {
@@ -239,7 +242,7 @@ export default function Workflow() {
         pendingMessage.current = JSON.stringify({
           topic: "open_file",
           action: "publish",
-          message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+          message: `${projectPath}/src/Tools/${filePath}`,
         });
         sendMessage(JSON.stringify(permission));
       }
