@@ -17,12 +17,13 @@ export const mainMenus: MainMenuItem[] = [
     label: "Tools",
     items: [
       { label: "Properties", value: "properties" },
-      { label: "Logger", value: "logger" },
+      { label: "Logger", value: "logstool" },
       { label: "History", value: "history" },
-      { label: "Data Frame", value: "data-frame" },
-      { label: "Edit CodeView", value: "edit-codeview" },
-      { label: "Workflow", value: "workflow" },
-      { label: "Execution", value: "execution" },
+      { label: "Data Frame", value: "webtabletool" },
+      { label: "Edit CodeView", value: "codeserver" },
+      { label: "Workflow", value: "workflow-manager" },
+      { label: "Workflow UI", value: "workflow-ui" },
+      { label: "Execution", value: "execution-controls" },
     ],
   },
   {

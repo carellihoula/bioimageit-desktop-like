@@ -1,6 +1,8 @@
 import { Button, Menu, Portal } from "@chakra-ui/react";
 import { dockviewThemes, DockviewThemeSelector } from "./DockviewThemeSelector";
 import { mainMenus } from "@/lib/const";
+import { showDockviewPanel } from "@/lib/showDockviewPanel";
+import { useCodeServerStore } from "@/store/useCodeServerStore";
 type ThemeOption = (typeof dockviewThemes)[number];
 
 /**
@@ -16,6 +18,7 @@ export const MainMenuBar = ({
   setTheme: (theme: ThemeOption["theme"]) => void;
   theme?: ThemeOption["theme"];
 }) => {
+  const codeServerStore = useCodeServerStore.getState();
   return (
     <div
       className={`flex justify-between items-center overflow-hidden dv-group-bg `}
@@ -40,6 +43,16 @@ export const MainMenuBar = ({
                         // className="flex items-center px-3 py-1 gap-2"
                         color={"dvForeground"}
                         cursor={"pointer"}
+                        onSelect={() => {
+                          if (item.value === "codeserver") {
+                            if (!codeServerStore.isOpen) {
+                              codeServerStore.openPanel();
+                              window?.pywebview?.api.launchCodeServer();
+                            }
+                          } else {
+                            showDockviewPanel(item.value);
+                          }
+                        }}
                       >
                         {IconComponent && <IconComponent size={16} />}
                         {item.label}
