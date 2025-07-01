@@ -121,7 +121,6 @@ export async function createTool({
 
 export async function getProjectPath(): Promise<string> {
   const response = await fetch(`http://localhost:8000/projectRootPath`);
-  console.log("getProjectPath response:", response);
   const data: string = await response.json();
   return data;
 }
