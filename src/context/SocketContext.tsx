@@ -1,4 +1,4 @@
-import { NodeData } from "@/types";
+import { LogMessage, NodeData } from "@/types";
 import React, {
   createContext,
   useState,
@@ -19,6 +19,8 @@ interface SocketContextProps {
   withPermission: boolean | null;
   setWithPermission: React.Dispatch<React.SetStateAction<boolean | null>>;
   connectionStatus: "connected" | "disconnected" | "reconnecting";
+  logs: LogMessage[];
+  setLogs: React.Dispatch<React.SetStateAction<LogMessage[]>>;
 }
 
 const SocketContext = createContext<SocketContextProps>({
@@ -27,6 +29,8 @@ const SocketContext = createContext<SocketContextProps>({
   withPermission: false,
   setWithPermission: () => {},
   connectionStatus: "disconnected",
+  logs: [],
+  setLogs: () => {},
 });
 
 export const useSocket = () => {
@@ -49,6 +53,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<NodeData[]>([]);
   const [withPermission, setWithPermission] = useState<boolean | null>(null);
+  const [logs, setLogs] = useState<LogMessage[]>([]);
 
   // const [wait]
   const [connectionStatus, setConnectionStatus] = useState<
@@ -107,6 +112,16 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
               JSON.parse(jsonData.message),
             ]);
             // console.log("data from jsonData :", jsonData.message);
+          } else if (jsonData.topic === "logs") {
+            // to be modified later
+            const logMessage: LogMessage = {
+              time: jsonData.message.time,
+              level: jsonData.message.level,
+              logger: jsonData.message.logger,
+              message: jsonData.message.message,
+            };
+            setLogs((prev) => [...prev, logMessage]);
+            // console.log("Log message received:", logMessage);
           } else {
             // to be modified later
             // setMessages((prev) => [...prev, rawMessage]);
@@ -169,6 +184,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
         connectionStatus,
         withPermission,
         setWithPermission,
+        logs,
+        setLogs,
       }}
     >
       {children}
