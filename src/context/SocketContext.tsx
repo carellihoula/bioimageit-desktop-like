@@ -89,12 +89,12 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
           topic: "table_data",
         });
         // Subscribe to "open_explorer" topic
-        // const subscribeExplorer = JSON.stringify({
-        //   action: "subscribe",
-        //   topic: "open_file",
-        // });
+        const subscribeLogs = JSON.stringify({
+          action: "subscribe",
+          topic: "logs",
+        });
         ws.send(subscribeMessage);
-        // ws.send(subscribeExplorer);
+        ws.send(subscribeLogs);
       };
 
       ws.onmessage = (event: MessageEvent) => {
