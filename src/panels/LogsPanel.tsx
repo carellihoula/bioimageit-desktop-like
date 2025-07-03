@@ -52,7 +52,7 @@ export const LogsPanel = () => {
   const { logs } = useSocket();
   console.log("Logs from context:", logs);
   return (
-    <div className="p-4 h-full w-full dv-fg overflow-y-auto bg-[var(--dv-background-color)] text-sm font-mono space-y-2">
+    <div className="p-4 h-full w-full dv-fg overflow-y-auto text-sm font-mono space-y-2">
       {/* <h2 className="text-lg font-semibold mb-2">Logs</h2> */}
       {logs.map((log, idx) => (
         <div key={idx} className="flex gap-2 items-start">
