@@ -16,7 +16,7 @@ export const components = {
       case "properties":
         //mockNode, mockNodeCellpose
         return <Properties />;
-      case "workflow":
+      case "workflow-ui":
         return <Workflow />;
       case "webtabletool":
         return <WebTableTool />;
@@ -24,7 +24,7 @@ export const components = {
         return <CodeServer />;
       case "execution-controls":
         return <ExecutionControls />;
-      case "Workflow-manager":
+      case "workflow-manager":
         return <WorkflowManager />;
       case "logstool":
         return <LogsPanel />;
