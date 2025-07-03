@@ -101,3 +101,10 @@ export interface DuplicateWorkflowResponse {
   path?: string;
   error?: string;
 }
+
+export interface LogMessage {
+  time: string;
+  level: string;
+  logger: string;
+  message: string;
+}
