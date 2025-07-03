@@ -37,6 +37,7 @@ import { useCodeServerStore } from "@/store/useCodeServerStore";
 import { useSocket } from "@/context/SocketContext";
 import { useValidConnection } from "@/hooks/workflow-ui/useValidConnection";
 import { CustomConnectionLine } from "@/components/Workflow-ui/CustomConnectionLine";
+import { getProjectPath } from "@/api/workflow/workflowApi";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -51,21 +52,21 @@ export default function Workflow() {
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
   const pendingMessage = useRef<string | null>(null);
-  const { sendMessage, withPermission } = useSocket();
-  // console.log("withPermission", withPermission);
-  // console.log("selected Path: ", selectedPath);
+  const { sendMessage, withPermission, setWithPermission } = useSocket();
+
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onRFEdgesChange] = useEdgesState<Edge>([]);
   const isValidConnection = useValidConnection();
   async function launchCodeServer() {
     const result = await window?.pywebview?.api.launchCodeServer();
-    // console.log(result);
-    // alert("Code-server status: " + result.status);
   }
 
   useCopyPaste(rfInstance);
   const { init, push, undo, redo } = useFlowHistory();
+  const [workflowToolPaths, setWorkflowToolPaths] = useState<Set<string>>(
+    new Set()
+  );
 
   // Load workflow when selectedPath changes
   useEffect(() => {
@@ -76,14 +77,17 @@ export default function Workflow() {
         const flow = await window.pywebview?.api.loadWorkflow(
           selectedPath ?? ""
         );
-        console.log("Réponse loadWorkflow", flow);
-        console.log("Réponse loadWorkflow", selectedPath);
 
         if (!flow || !flow.success) {
           // console.error("Loading failed:", flow?.error);
           init([], []);
           return;
         }
+        const toolPaths = await window.pywebview?.api.getWorkflowTools(
+          selectedPath ?? ""
+        );
+        const paths = toolPaths?.map((t) => t.module_path);
+        setWorkflowToolPaths(new Set(paths));
 
         const data = flow.data;
         rfInstance?.setNodes(data?.nodes ?? []);
@@ -197,14 +201,14 @@ export default function Workflow() {
 
   //
   const sendFileMessage = useCallback(
-    (filePath: string) => {
+    async (finalPath: string) => {
       const message = {
         topic: "open_file",
         action: "publish",
-        message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+        message: finalPath,
       };
       sendMessage(JSON.stringify(message));
-      console.log("message sent  >>>", JSON.stringify(message));
+      // console.log("message sent  >>>", JSON.stringify(message));
     },
     [sendMessage]
   );
@@ -212,6 +216,7 @@ export default function Workflow() {
   const handleAction = async (
     action: (typeof contextMenu)[number]["action"]
   ) => {
+    console.log("permission Outside", withPermission);
     if (!ctx) return;
     if (action === "duplicate") {
       duplicateNode();
@@ -219,17 +224,25 @@ export default function Workflow() {
       deleteNode();
     } else if (action === "edit") {
       const tool = ctx.node.data.tool as ToolInfo;
-      // console.log("node: ", tool.module_path);
 
       const codeServerStore = useCodeServerStore.getState();
       if (!codeServerStore.isOpen) {
+        // setWithPermission(false);
         codeServerStore.openPanel();
 
         launchCodeServer();
       }
-      const filePath = tool.module_path?.replace(/\./g, "/") + ".py";
+      // const modulePath = tool.module_path;
+      const projectPath = await getProjectPath();
+      const modulePath = tool.module_path?.replace(/\./g, "/") + ".py";
+      const isInWorkflow = workflowToolPaths.has(modulePath);
+      console.log("permission", withPermission);
+      const finalPath = isInWorkflow
+        ? `${selectedPath}/${modulePath}`
+        : `${projectPath}/src/Tools/${modulePath}`;
+
       if (withPermission) {
-        sendFileMessage(filePath);
+        sendFileMessage(finalPath);
       } else {
         // Otherwise, request permission and store the message
         const permission = {
@@ -239,7 +252,7 @@ export default function Workflow() {
         pendingMessage.current = JSON.stringify({
           topic: "open_file",
           action: "publish",
-          message: `/home/carellihoula/bioimageit-v2/${filePath}`,
+          message: finalPath,
         });
         sendMessage(JSON.stringify(permission));
       }
@@ -258,11 +271,21 @@ export default function Workflow() {
     }
   }, [withPermission]);
 
-  // global click to close menu
   useEffect(() => {
+    const unsub = useCodeServerStore.subscribe((state) => {
+      if (!state.isOpen) {
+        setWithPermission(false);
+      }
+    });
+
+    // Closes context menu on global click
     const onClick = () => setCtx(null);
     document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
+
+    return () => {
+      unsub();
+      document.removeEventListener("click", onClick);
+    };
   }, []);
 
   // global keyboard undo/redo
@@ -290,7 +313,6 @@ export default function Workflow() {
       if (!data || !reactFlowBounds || !rfInstance) return;
 
       const tool = JSON.parse(data) as ToolInfo;
-      // console.log("tool", tool);
       const { x: viewportX, y: viewportY, zoom } = rfInstance.getViewport();
       const position = {
         x: (event.clientX - reactFlowBounds.left - viewportX) / zoom,

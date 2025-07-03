@@ -74,8 +74,8 @@ const bodyReturn = (node: ToolInfo) => {
       title: "Inputs",
       body: (
         <div>
-          {node.inputs?.map((input) => (
-            <div key={input.name} className="mb-3 flex gap-2 items-center">
+          {node.inputs?.map((input, index) => (
+            <div key={index} className="mb-3 flex gap-2 items-center">
               <label className="block">{input.name}</label>
               {renderField(input)}
             </div>
@@ -88,8 +88,8 @@ const bodyReturn = (node: ToolInfo) => {
       title: "Outputs",
       body: (
         <div>
-          {node.outputs?.map((output) => (
-            <div key={output.name} className="mb-2 flex gap-2 items-center">
+          {node.outputs?.map((output, index) => (
+            <div key={index} className="mb-2 flex gap-2 items-center">
               <label className="block">{output.name}</label>
               <Input
                 size={"xs"}

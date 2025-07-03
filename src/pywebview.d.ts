@@ -6,6 +6,11 @@
 
 import { Edge, Node } from "@xyflow/react";
 
+interface WorkflowToolInfo {
+  module_path: string; // ex: "/Tools/foo/bar.py"
+  absolute_path: string; // ex: "/home/user/Workflows/MyWF/Tools/foo/bar.py"
+}
+
 interface WorkflowGraphData {
   nodes: Node[];
   edges: Edge[];
@@ -46,6 +51,7 @@ interface PywebviewApiBridge {
   launchCodeServer: () => void;
   getStatus: () => Promise<string>;
   getHomePath: () => Promise<string>;
+  getWorkflowTools: (path: string) => Promise<WorkflowToolInfo[]>;
 }
 
 // Declare the Window global interface extension

@@ -98,7 +98,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({
         try {
           const jsonData = JSON.parse(rawMessage);
           if (jsonData.action === "wait_for_permission") {
-            setWithPermission(jsonData.message); // met à jour true/false
+            setWithPermission(jsonData.message); // true
             console.log("Permission reçue:", jsonData.message);
           } else if (jsonData.topic === "table_data") {
             // to be modified later
