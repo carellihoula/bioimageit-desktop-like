@@ -61,6 +61,7 @@ export type NodeProperty = {
   help?: string;
   required?: boolean;
   default?: boolean | number | string;
+  value?: boolean | number | string;
   type: string;
   choices?: string[];
   decimals?: number;

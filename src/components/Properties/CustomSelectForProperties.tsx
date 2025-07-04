@@ -5,13 +5,32 @@ import { ListCollection, Portal, Select } from "@chakra-ui/react";
  * Uses Chakra UI's Select component with a portal for better positioning and z-index handling.
  */
 
+interface CustomSelectForPropertiesProps {
+  data: ListCollection;
+  value?: string;
+  onChange?: (value: any) => void;
+  placeholder?: string;
+}
+
 export const CustomSelectForProperties = ({
   data,
-}: {
-  data: ListCollection;
-}) => {
+  value,
+  onChange,
+}: CustomSelectForPropertiesProps) => {
+  // const displayPlaceholder = placeholder || data.firstValue || "Select option";
   return (
-    <Select.Root collection={data} size="xs" width="full">
+    <Select.Root
+      collection={data}
+      size="xs"
+      width="full"
+      value={value ? [value] : []}
+      onValueChange={(details) => {
+        console.log("Select changed:", details.value);
+        if (onChange && details.value.length > 0) {
+          onChange(details.value[0]);
+        }
+      }}
+    >
       <Select.HiddenSelect />
       <Select.Control>
         <Select.Trigger borderColor="dvSeparatorBorder">

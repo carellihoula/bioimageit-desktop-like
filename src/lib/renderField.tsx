@@ -12,15 +12,19 @@ import {
  * Renders a field based on the NodeProperty type.
  * Handles different input types like numbers, booleans, strings, and paths.
  */
-export function renderField(prop: NodeProperty) {
+export function renderField(
+  prop: NodeProperty,
+  onChange: (value: any) => void
+) {
   switch (prop.type) {
     case "int":
     case "float":
       return (
         <NumberInput.Root
-          defaultValue={String(prop.default)}
+          value={String(prop.default ?? "")}
           width="full"
           size={"xs"}
+          onValueChange={(details) => onChange(Number(details.value))}
         >
           <NumberInput.Control borderColor="dvSeparatorBorder" />
           <NumberInput.Input borderColor="dvSeparatorBorder" />
@@ -30,8 +34,9 @@ export function renderField(prop: NodeProperty) {
       return (
         <input
           type="checkbox"
-          defaultChecked={!!prop.default}
+          checked={!!prop.default}
           className="ml-1"
+          onChange={(e) => onChange(e.target.checked)}
         />
       );
 
@@ -40,15 +45,22 @@ export function renderField(prop: NodeProperty) {
         const items = createListCollection({
           items: prop.choices,
         });
-        return <CustomSelectForProperties data={items} />;
+        return (
+          <CustomSelectForProperties
+            data={items}
+            value={String(prop.default ?? "")}
+            onChange={onChange}
+          />
+        );
       }
       return (
         <Input
           type="text"
           borderColor="dvSeparatorBorder"
           size={"xs"}
-          defaultValue={String(prop.default)}
+          value={String(prop.default ?? "")}
           className="border p-1 w-full"
+          onChange={(e) => onChange(e.target.value)}
         />
       );
     case "Path":
@@ -57,11 +69,12 @@ export function renderField(prop: NodeProperty) {
           <Input
             type="text"
             color={"dvForeground"}
-            defaultValue={String(prop.default ?? "")}
+            value={String(prop.default ?? "")}
             borderColor="dvSeparatorBorder"
             placeholder="Path to file"
             flex="1"
             size="xs"
+            onChange={(e) => onChange(e.target.value)}
           />
           <Button
             borderColor="dvSeparatorBorder"
@@ -81,7 +94,7 @@ export function renderField(prop: NodeProperty) {
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
-                  console.log("Selected file:", file);
+                  onChange(file.name);
                 }
               }}
             />
