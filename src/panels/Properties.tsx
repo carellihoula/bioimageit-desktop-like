@@ -4,6 +4,11 @@ import { ToolInfo } from "@/types";
 import { Input } from "@chakra-ui/react";
 import { useReactFlow, useStore } from "@xyflow/react";
 
+/*
+ * @param node - The node metadata containing inputs, outputs and description
+ * @returns Array of accordion section objects
+ */
+
 export function Properties() {
   const { setNodes, getNodes } = useReactFlow();
   const selectedNode = useStore((state) =>
@@ -73,8 +78,8 @@ export function Properties() {
     );
 
   return (
-    <div className="h-full w-full overflow-hidden">
-      <div className="p-4 w-full space-y-4 h-full max-h-full overflow-y-auto dv-fg">
+    <div className="flex flex-col h-full w-full">
+      <div className=" flex-1 overflow-y-auto p-4 space-y-4 dv-fg">
         <Stack gap="8" width={"full"} className="">
           <For each={["outline"]}>
             {(variant) => (
@@ -124,6 +129,13 @@ export function Properties() {
   );
 }
 
+/**
+ * Returns an array of objects containing the input, output, and info sections for a node
+ * Each object has a value (for accordion item identification), title, and body content
+ * The body content includes input fields, output fields, and node description
+ * @param node - The node metadata containing inputs, outputs and description
+ * @returns Array of accordion section objects
+ */
 const bodyReturn = (
   node: ToolInfo,
   handleFieldChange: (
@@ -145,16 +157,12 @@ const bodyReturn = (
               input.value !== undefined ? input.value : input.default;
             // const isModified = input.value !== undefined;
             return (
-              <div className="mb-3">
-                <div>
-                  <label className="block">{input.name}</label>
-                </div>
-                <div key={index} className="mb-3 flex gap-2 items-center">
-                  {renderField(
-                    { ...input, default: currentValue }, // the current value
-                    (value) => handleFieldChange(input.name, value, false)
-                  )}
-                </div>
+              <div key={index} className="mb-3 flex gap-2 items-center">
+                <label className="text-sm">{input.name}</label>
+                {renderField(
+                  { ...input, default: currentValue }, // the current value
+                  (value) => handleFieldChange(input.name, value, false)
+                )}
               </div>
             );
           })}
@@ -173,10 +181,8 @@ const bodyReturn = (
 
             return (
               <div key={index} className="mb-3">
-                <div className="mb-1">
-                  <label className="block">{output.name}</label>
-                </div>
                 <div className="flex gap-2 items-center">
+                  <label className="text-sm">{output.name}</label>
                   <Input
                     size={"xs"}
                     borderColor="dvSeparatorBorder"
