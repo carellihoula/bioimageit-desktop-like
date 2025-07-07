@@ -12,7 +12,7 @@ export function Properties() {
 
   const handleFieldChange = (
     fieldName: string,
-    newValue: any,
+    newValue: boolean | number | string,
     isOutput = false
   ) => {
     const updatedNodes = getNodes().map((node) => {
@@ -41,7 +41,7 @@ export function Properties() {
     setNodes(updatedNodes);
   };
 
-  // const handleResetField = (fieldName: string, isOutput = false) => {
+  // const handleResetAllFields = () => {
   //   const updatedNodes = getNodes().map((node) => {
   //     if (!node.selected) return node;
 
@@ -49,11 +49,8 @@ export function Properties() {
 
   //     const updatedTool: ToolInfo = {
   //       ...tool,
-  //       [isOutput ? "outputs" : "inputs"]: tool[
-  //         isOutput ? "outputs" : "inputs"
-  //       ]?.map((field) =>
-  //         field.name === fieldName ? { ...field, value: undefined } : field
-  //       ),
+  //       inputs: tool.inputs?.map((field) => ({ ...field, value: undefined })),
+  //       outputs: tool.outputs?.map((field) => ({ ...field, value: undefined })),
   //     };
 
   //     return {
@@ -113,6 +110,15 @@ export function Properties() {
             )}
           </For>
         </Stack>
+        {/* <Button
+          size="sm"
+          // colorScheme="red"
+          color={"dvForeground"}
+          variant="outline"
+          onClick={handleResetAllFields}
+        >
+          Reset All
+        </Button> */}
       </div>
     </div>
   );
@@ -120,7 +126,11 @@ export function Properties() {
 
 const bodyReturn = (
   node: ToolInfo,
-  handleFieldChange: Function
+  handleFieldChange: (
+    fieldName: string,
+    newValue: boolean | number | string,
+    isOutput: boolean
+  ) => void
   // handleResetField: Function
 ) => {
   return [
