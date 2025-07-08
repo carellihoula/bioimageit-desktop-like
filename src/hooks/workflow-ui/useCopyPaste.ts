@@ -30,7 +30,7 @@ export const useCopyPaste = (rfInstance: ReactFlowInstance | null) => {
       rfInstance.setNodes((nds) => nds.map((n) => ({ ...n, selected: false })));
       // Add pasted nodes with new IDs & offset position
       const newNodes = nodes.map((n) => {
-        const newId = Math.random().toString(16).slice(2);
+        const newId = crypto.randomUUID();
         return {
           ...n,
           id: newId,
