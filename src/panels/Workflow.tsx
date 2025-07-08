@@ -38,6 +38,7 @@ import { useSocket } from "@/context/SocketContext";
 import { useValidConnection } from "@/hooks/workflow-ui/useValidConnection";
 import { CustomConnectionLine } from "@/components/Workflow-ui/CustomConnectionLine";
 import { getProjectPath } from "@/api/workflow/workflowApi";
+import { useWorkflowTools } from "@/hooks/tools/useWorkflowTools";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -58,6 +59,7 @@ export default function Workflow() {
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onRFEdgesChange] = useEdgesState<Edge>([]);
   const isValidConnection = useValidConnection();
+  const { data: toolPaths, refetch } = useWorkflowTools(selectedPath);
   async function launchCodeServer() {
     const result = await window?.pywebview?.api.launchCodeServer();
   }
@@ -83,11 +85,16 @@ export default function Workflow() {
           init([], []);
           return;
         }
-        const toolPaths = await window.pywebview?.api.getWorkflowTools(
-          selectedPath ?? ""
-        );
-        const paths = toolPaths?.map((t) => t.module_path);
-        setWorkflowToolPaths(new Set(paths));
+        // const toolPaths = await window.pywebview?.api.getWorkflowTools(
+        //   selectedPath ?? ""
+        // );
+        // // useWorkflowStore.getState().setWorkflowToolPaths(new Set(toolPaths));
+        // const paths = toolPaths?.map((t) => t.module_path);
+        if (toolPaths) {
+          setWorkflowToolPaths(new Set(toolPaths));
+          console.log("Workflow tool paths:", toolPaths);
+        }
+        // setWorkflowToolPaths(new Set(toolPaths?.map((t) => t.module_path)));
 
         const data = flow.data;
         rfInstance?.setNodes(data?.nodes ?? []);
