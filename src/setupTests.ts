@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { beforeAll, vi } from "vitest";
 
-beforeAll(() => {
+function mockMatchMedia() {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: vi.fn().mockImplementation((query) => ({
@@ -15,6 +15,10 @@ beforeAll(() => {
       dispatchEvent: vi.fn(),
     })),
   });
+}
+
+beforeAll(() => {
+  mockMatchMedia();
 });
 
 class MockClipboardEvent extends Event {

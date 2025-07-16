@@ -1,14 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { useWorkflowStore } from "@/store/useWorkflowStore";
+// import { useWorkflowStore } from "@/store/useWorkflowStore";
+import * as workflowStore from "@/store/useWorkflowStore";
 import { CreateToolDialog } from "./CreateToolDialog";
 import { Provider } from "../ui/provider";
 
 // Mock the store
-vi.mock("@/store/useWorkflowStore", async () => {
-  const actual = await vi.importActual<
-    typeof import("@/store/useWorkflowStore")
-  >("@/store/useWorkflowStore");
+vi.mock("@/store/useWorkflowStore", () => {
+  const actual = vi.importActual<typeof import("@/store/useWorkflowStore")>(
+    "@/store/useWorkflowStore"
+  );
   return {
     ...actual,
     useWorkflowStore: vi.fn(),
@@ -22,9 +23,14 @@ describe("CreateToolDialog", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Simulate a selected workflow
-    (useWorkflowStore as any).mockImplementation((selector: any) =>
-      selector({ selectedPath: "/path/to/workflow" })
+    const mockedUseWorkflowStore = vi.mocked(workflowStore.useWorkflowStore);
+    mockedUseWorkflowStore.mockImplementation((selector) =>
+      selector({
+        selectedPath: "/path/to/workflow",
+        paths: [],
+        setPaths: vi.fn(),
+        setSelectedPath: vi.fn(),
+      })
     );
   });
 
