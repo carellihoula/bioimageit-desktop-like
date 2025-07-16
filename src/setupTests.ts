@@ -30,4 +30,4 @@ class MockClipboardEvent extends Event {
   }
 }
 
-global.ClipboardEvent = MockClipboardEvent as any;
+global.ClipboardEvent = MockClipboardEvent as typeof ClipboardEvent;
