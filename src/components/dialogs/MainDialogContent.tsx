@@ -89,6 +89,12 @@ function MainDialogContent() {
           }
         />
       )}
+      {type === "preferences" && (
+        <div>
+          <p>Preferences</p>
+          <p>Coming soon...</p>
+        </div>
+      )}
     </DraggableMainDialog>
   );
 }

@@ -3,6 +3,7 @@ import { dockviewThemes, DockviewThemeSelector } from "./DockviewThemeSelector";
 import { mainMenus } from "@/lib/const";
 import { showDockviewPanel } from "@/lib/showDockviewPanel";
 import { useCodeServerStore } from "@/store/useCodeServerStore";
+import { useDialogStore } from "@/store/useDialogStore";
 type ThemeOption = (typeof dockviewThemes)[number];
 
 /**
@@ -19,6 +20,7 @@ export const MainMenuBar = ({
   theme?: ThemeOption["theme"];
 }) => {
   const codeServerStore = useCodeServerStore.getState();
+  const { openDialog } = useDialogStore();
   return (
     <div
       className={`flex justify-between items-center overflow-hidden dv-group-bg `}
@@ -43,6 +45,11 @@ export const MainMenuBar = ({
                         // className="flex items-center px-3 py-1 gap-2"
                         color={"dvForeground"}
                         cursor={"pointer"}
+                        onClick={() => {
+                          if (item.value === "preferences") {
+                            openDialog("preferences");
+                          }
+                        }}
                         onSelect={() => {
                           if (item.value === "codeserver") {
                             if (!codeServerStore.isOpen) {
