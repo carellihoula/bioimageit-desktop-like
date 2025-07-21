@@ -12,6 +12,7 @@ import {
 } from "@/api/workflow/workflowApi";
 import { useDialogStore } from "@/store/useDialogStore";
 import { CreateToolDialog } from "./CreateToolDialog";
+// import { Preferences } from "./Preferences";
 import Preferences from "./PreferencesDaliog";
 
 function MainDialogContent() {
