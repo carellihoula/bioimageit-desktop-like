@@ -15,8 +15,9 @@ import { useWorkflowStore } from "@/store/useWorkflowStore";
 export default function FileTree({ search }: { search: string }) {
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
   const { isPending, error, data } = useQuery<ITreeItem[]>({
-    queryKey: ["treeData"],
+    queryKey: ["treeData", selectedPath],
     queryFn: () => fetchTools(selectedPath),
+    enabled: selectedPath !== null,
   });
 
   // --- Memoize the filtered items ---
