@@ -58,4 +58,8 @@ export const DialogTypes = [
     type: "create-tool",
     title: "Create Tool",
   },
+  {
+    type: "preferences",
+    title: "Preferences",
+  },
 ];

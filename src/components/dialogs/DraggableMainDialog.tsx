@@ -36,10 +36,15 @@ export const DraggableMainDialog = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            maxHeight: "70%",
           }}
         >
-          <Dialog.Content>
+          <Dialog.Content
+            style={{
+              // backgroundColor: "red",
+              // maxWidth: "85%",
+              height: "auto",
+            }}
+          >
             <div
               className="flex items-center w-full justify-between dv-height-tab dv-bg-tab-container pr-2"
               style={{
