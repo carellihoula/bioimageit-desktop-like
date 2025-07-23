@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useDialogStore } from "@/store/useDialogStore";
 import { exportAndSaveWorkflow } from "@/api/Javascript–Python-bridge/exportWorkflowAPI";
 import { useWorkflowStore } from "@/store/useWorkflowStore";
+import { useOpenWorkflow } from "@/hooks/workflow-ui/useOpenWorkflow";
 // import { useReactFlow } from "@xyflow/react";
 
 /**
@@ -25,8 +26,9 @@ export const WorkflowManager = () => {
   // console.log("targetParentPath", targetParentPath);
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
   const setSelectedPath = useWorkflowStore((state) => state.setSelectedPath);
-  const paths = useWorkflowStore((state) => state.paths);
+  // const paths = useWorkflowStore((state) => state.paths);
   const setPaths = useWorkflowStore((state) => state.setPaths);
+  const { handleOpenWorkflow } = useOpenWorkflow();
 
   const selectedName = selectedPath?.split("/").pop();
   // console.log("selectedName", selectedName);
@@ -79,35 +81,6 @@ export const WorkflowManager = () => {
         target_parent_path: targetParentPath ?? "",
         target_name: targetName,
       });
-    }
-  };
-
-  const handleOpenWorkflow = async () => {
-    if (
-      window.pywebview &&
-      window.pywebview.api &&
-      typeof window.pywebview.api.openWorkflowFromSelectedFolder === "function"
-    ) {
-      try {
-        const result =
-          await window.pywebview.api.openWorkflowFromSelectedFolder();
-
-        if (result.success && result.graph_data && result.path) {
-          // setCurrentWorkflowPath(result.path);
-          setSelectedPath(result.path);
-          if (!paths.includes(result.path)) {
-            const updated = [...paths, result.path];
-            setPaths(updated);
-
-            queryClient.setQueryData(["getWorkflows"], updated);
-            // setPaths([...paths, result.path]);
-          }
-        } else if (result.error) {
-          alert(`Error opening workflow: ${result.error}`);
-        }
-      } catch (error) {
-        alert(`Erreur JavaScript: ${error}`);
-      }
     }
   };
 

@@ -4,6 +4,10 @@ import { mainMenus } from "@/lib/const";
 import { showDockviewPanel } from "@/lib/showDockviewPanel";
 import { useCodeServerStore } from "@/store/useCodeServerStore";
 import { useDialogStore } from "@/store/useDialogStore";
+import { exportAndSaveWorkflow } from "@/api/Javascript–Python-bridge/exportWorkflowAPI";
+import { toaster } from "../ui/toaster";
+import { useOpenWorkflow } from "@/hooks/workflow-ui/useOpenWorkflow";
+
 type ThemeOption = (typeof dockviewThemes)[number];
 
 /**
@@ -11,7 +15,6 @@ type ThemeOption = (typeof dockviewThemes)[number];
  * Each menu can have multiple items.
  * the user must click on the menu to view the items.
  */
-
 export const MainMenuBar = ({
   setTheme,
   theme,
@@ -21,6 +24,33 @@ export const MainMenuBar = ({
 }) => {
   const codeServerStore = useCodeServerStore.getState();
   const { openDialog } = useDialogStore();
+  const { handleOpenWorkflow, selectedPath, selectedName } = useOpenWorkflow();
+
+  const showToaster = () => {
+    toaster.create({
+      description: "File saved successfully",
+      type: "info",
+      duration: 3000,
+    });
+  };
+
+  const handleMenuAction = (itemValue: string) => {
+    const actions: Record<string, () => void> = {
+      preferences: () => openDialog("preferences"),
+      "new-workflow": () => openDialog("create"),
+      "open-workflow": () => handleOpenWorkflow(),
+      "export-workflow": () => {
+        if (selectedPath && selectedName) {
+          exportAndSaveWorkflow(selectedPath, selectedName);
+        }
+      },
+      "save-workflow": () => showToaster(),
+    };
+
+    const action = actions[itemValue];
+    if (action) action();
+  };
+
   return (
     <div
       className={`flex justify-between items-center overflow-hidden dv-group-bg `}
@@ -45,11 +75,7 @@ export const MainMenuBar = ({
                         // className="flex items-center px-3 py-1 gap-2"
                         color={"dvForeground"}
                         cursor={"pointer"}
-                        onClick={() => {
-                          if (item.value === "preferences") {
-                            openDialog("preferences");
-                          }
-                        }}
+                        onClick={() => handleMenuAction(item.value)}
                         onSelect={() => {
                           if (item.value === "codeserver") {
                             if (!codeServerStore.isOpen) {
