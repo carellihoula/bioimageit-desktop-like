@@ -2,10 +2,10 @@ import { create } from "zustand";
 
 interface DialogState {
   isOpen: boolean;
-  type: "rename" | "delete" | "create" | "create-tool" | null;
+  type: "rename" | "delete" | "create" | "create-tool" | "preferences" | null;
   workflow: string | null;
   openDialog: (
-    type: "rename" | "delete" | "create" | "create-tool",
+    type: "rename" | "delete" | "create" | "create-tool" | "preferences",
     workflow?: string
   ) => void;
   closeDialog: () => void;

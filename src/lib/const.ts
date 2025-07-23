@@ -1,6 +1,14 @@
 // src/lib/const.ts
 import { ContextMenuItem, MainMenuItem } from "@/types";
-import { Settings, PlusSquare, FolderOpen, Save, Share2 } from "lucide-react";
+import {
+  Settings,
+  PlusSquare,
+  FolderOpen,
+  Save,
+  Share2,
+  Mouse,
+  Palette,
+} from "lucide-react";
 
 export const mainMenus: MainMenuItem[] = [
   {
@@ -58,4 +66,15 @@ export const DialogTypes = [
     type: "create-tool",
     title: "Create Tool",
   },
+  {
+    type: "preferences",
+    title: "Preferences",
+  },
+];
+
+// Preference tabs configuration
+export const tabs = [
+  { id: "General", label: "General", icon: Settings },
+  { id: "Input", label: "Input", icon: Mouse },
+  { id: "Theme", label: "Theme", icon: Palette },
 ];

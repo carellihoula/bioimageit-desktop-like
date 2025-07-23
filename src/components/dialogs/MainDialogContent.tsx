@@ -12,6 +12,8 @@ import {
 } from "@/api/workflow/workflowApi";
 import { useDialogStore } from "@/store/useDialogStore";
 import { CreateToolDialog } from "./CreateToolDialog";
+// import { Preferences } from "./Preferences";
+import Preferences from "./PreferencesDaliog";
 
 function MainDialogContent() {
   const { isOpen, type, workflow, closeDialog } = useDialogStore();
@@ -88,6 +90,13 @@ function MainDialogContent() {
             createToolMutation.mutate({ filename, current_workflow })
           }
         />
+      )}
+      {type === "preferences" && (
+        // <div>
+        //   <p>Preferences</p>
+        //   <p>Coming soon...</p>
+        // </div>
+        <Preferences />
       )}
     </DraggableMainDialog>
   );

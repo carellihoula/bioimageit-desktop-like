@@ -8,6 +8,7 @@ import MainDialogContent from "./components/dialogs/MainDialogContent";
 // import { useComponents } from "./components/dockview/dockviewComponents";
 import { components } from "./components/dockview/dockviewComponents";
 import { dockviewOnReady } from "./components/dockview/dockviewOnReady";
+import { Toaster } from "./components/ui/toaster";
 
 /**
  * Components to be used in the Dockview panels.
@@ -61,6 +62,7 @@ const App: React.FC = () => {
         className={theme.className}
       />
       <MainDialogContent />
+      <Toaster />
     </div>
   );
 };
