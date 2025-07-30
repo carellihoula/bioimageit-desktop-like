@@ -60,6 +60,7 @@ export type NodeProperty = {
   shortname?: string;
   help?: string;
   required?: boolean;
+  autoColumn?: boolean;
   default?: boolean | number | string;
   value?: boolean | number | string;
   type: string;

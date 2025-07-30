@@ -50,7 +50,7 @@ const logLevelStyles: Record<string, string> = {
 
 export const LogsPanel = () => {
   const { logs } = useSocket();
-  console.log("Logs from context:", logs);
+  // console.log("Logs from context:", logs);
   return (
     <div className="p-4 h-full w-full dv-fg overflow-y-auto text-sm font-mono space-y-2">
       {/* <h2 className="text-lg font-semibold mb-2">Logs</h2> */}

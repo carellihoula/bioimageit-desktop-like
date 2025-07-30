@@ -25,7 +25,7 @@ export const CustomSelectForProperties = ({
       width="full"
       value={value ? [value] : []}
       onValueChange={(details) => {
-        console.log("Select changed:", details.value);
+        // console.log("Select changed:", details.value);
         if (onChange && details.value.length > 0) {
           onChange(details.value[0]);
         }
