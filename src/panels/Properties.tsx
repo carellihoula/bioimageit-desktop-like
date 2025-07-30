@@ -1,19 +1,42 @@
-import { Accordion, For, Span, Stack } from "@chakra-ui/react";
+import {
+  Accordion,
+  createListCollection,
+  For,
+  Span,
+  Stack,
+} from "@chakra-ui/react";
 import { renderField } from "@/lib/renderField";
 import { ToolInfo } from "@/types";
 import { Input } from "@chakra-ui/react";
 import { useReactFlow, useStore } from "@xyflow/react";
+import { CustomSelectForProperties } from "@/components/Properties/CustomSelectForProperties";
+import { useState } from "react";
 
+function useIsSourceNode(nodeId?: string) {
+  return useStore((state) => {
+    if (!nodeId) return false;
+
+    // Check if this node is used as a target in an edge
+    const hasIncoming = state.edges.some((edge) => edge.target === nodeId);
+    return !hasIncoming; // true if it is a source node
+  });
+}
 /*
  * @param node - The node metadata containing inputs, outputs and description
  * @returns Array of accordion section objects
  */
-
 export function Properties() {
   const { setNodes, getNodes } = useReactFlow();
+
   const selectedNode = useStore((state) =>
     state.nodes.find((node) => node.selected)
   );
+
+  const isSource = useIsSourceNode(selectedNode?.id);
+
+  const [inputModes, setInputModes] = useState<{
+    [key: string]: "Constant" | "Column";
+  }>({});
 
   const handleFieldChange = (
     fieldName: string,
@@ -93,7 +116,10 @@ export function Properties() {
                   {(selectedNode.data.tool as ToolInfo) &&
                     bodyReturn(
                       selectedNode.data.tool as ToolInfo,
-                      handleFieldChange
+                      isSource,
+                      handleFieldChange,
+                      inputModes,
+                      setInputModes
                       // handleResetField
                     ).map((item, index) => (
                       <Accordion.Item
@@ -138,13 +164,22 @@ export function Properties() {
  */
 const bodyReturn = (
   node: ToolInfo,
+  isSource: boolean,
   handleFieldChange: (
     fieldName: string,
     newValue: boolean | number | string,
     isOutput: boolean
-  ) => void
+  ) => void,
+  inputModes: Record<string, "Constant" | "Column">,
+  setInputModes: React.Dispatch<
+    React.SetStateAction<{ [key: string]: "Constant" | "Column" }>
+  >
   // handleResetField: Function
 ) => {
+  const items = createListCollection({
+    items: ["Constant", "Column"],
+  });
+
   return [
     {
       value: "a",
@@ -156,9 +191,29 @@ const bodyReturn = (
             const currentValue =
               input.value !== undefined ? input.value : input.default;
             // const isModified = input.value !== undefined;
+            // Get current mode for this input, or determine default based on autoColumn
+            const currentMode =
+              inputModes[input.name] ??
+              (input.autoColumn ? "Column" : "Constant");
+            const handleModeChange = (newMode: "Constant" | "Column") => {
+              setInputModes((prev) => ({
+                ...prev,
+                [input.name]: newMode,
+              }));
+            };
             return (
               <div key={index} className="mb-3 flex gap-2 items-center">
                 <label className="text-sm">{input.name}</label>
+                {!isSource && (
+                  <CustomSelectForProperties
+                    data={items}
+                    value={currentMode}
+                    onChange={(newVal) =>
+                      handleModeChange(newVal as "Constant" | "Column")
+                    }
+                  />
+                )}
+
                 {renderField(
                   { ...input, default: currentValue }, // the current value
                   (value) => handleFieldChange(input.name, value, false)
