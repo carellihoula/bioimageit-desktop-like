@@ -52,6 +52,8 @@ interface PywebviewApiBridge {
   getStatus: () => Promise<string>;
   getHomePath: () => Promise<string>;
   getWorkflowTools: (path: string) => Promise<WorkflowToolInfo[]>;
+  node_selected: (node: Node, workflow_path: string) => Promise<void>;
+  wor;
 }
 
 // Declare the Window global interface extension
