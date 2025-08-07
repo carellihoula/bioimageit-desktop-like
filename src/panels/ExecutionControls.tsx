@@ -1,18 +1,38 @@
 import { Check, Play, PlayCircle, Trash2 } from "lucide-react";
 import { LargeIconButton } from "../components/custom-ui/LargeIconButton";
+import { useReactFlow } from "@xyflow/react";
 
 export function ExecutionControls() {
+  const { toObject } = useReactFlow();
+  const handleExecute = async () => {
+    try {
+      const flow = toObject();
+      // Calling the Python API via pywebview
+      const result = await window.pywebview?.api.run_workflow(
+        JSON.stringify(flow)
+      );
+      // result is typically a JSON string, to be parsed if needed
+      const parsedResult = result ? JSON.parse(result) : null;
+      // Display or process the result
+      console.log("Workflow result:", parsedResult);
+      alert("Execution complete! See the console for results.");
+    } catch (error) {
+      console.error("Error during workflow execution:", error);
+      alert("Error during workflow execution.");
+    }
+  };
   return (
     <div className="flex flex-col items-center p-4 overflow-auto h-full">
       <LargeIconButton
         label="Run unexecuted nodes"
         icon={<Play size={16} />}
-        onClick={() => console.log("Clicked Create Tool")}
+        // onClick={() => console.log("Clicked Create Tool")}
+        onClick={handleExecute}
       />
       <LargeIconButton
         label="Run selected nodes"
         icon={<PlayCircle size={16} />}
-        onClick={() => console.log("Clicked Create Tool")}
+        onClick={() => console.log("Clicked Run selected nodes")}
       />
       <LargeIconButton
         label="Clear selected nodes"
