@@ -35,6 +35,11 @@ interface LoadWorkflowResult {
   data?: WorkflowGraphData;
   error?: string;
 }
+interface GetImagesFolderPathResult {
+  success?: boolean;
+  path?: string;
+  error?: string;
+}
 
 interface PywebviewApiBridge {
   // method_name: (param1: type, param2: type) => Promise<return_type>;
@@ -53,7 +58,8 @@ interface PywebviewApiBridge {
   getHomePath: () => Promise<string>;
   getWorkflowTools: (path: string) => Promise<WorkflowToolInfo[]>;
   node_selected: (node: Node, workflow_path: string) => Promise<void>;
-  run_workflow(graphJson: string): Promise<string>;
+  run_workflow: (graphJson: string) => Promise<string>;
+  getImagesFolderPath: () => Promise<GetImagesFolderPathResult>;
 }
 
 // Declare the Window global interface extension

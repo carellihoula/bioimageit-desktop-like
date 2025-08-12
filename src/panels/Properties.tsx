@@ -5,7 +5,7 @@ import {
   Span,
   Stack,
 } from "@chakra-ui/react";
-import { renderField } from "@/lib/renderField";
+import { RenderField } from "@/lib/renderField";
 import { ToolInfo } from "@/types";
 import { Input } from "@chakra-ui/react";
 import { useReactFlow, useStore } from "@xyflow/react";
@@ -214,10 +214,16 @@ const bodyReturn = (
                   />
                 )}
 
-                {renderField(
+                {/* {renderField(
                   { ...input, default: currentValue }, // the current value
                   (value) => handleFieldChange(input.name, value, false)
-                )}
+                )} */}
+                <RenderField
+                  prop={{ ...input, default: currentValue }}
+                  onChange={(value) =>
+                    handleFieldChange(input.name, value, false)
+                  }
+                />
               </div>
             );
           })}

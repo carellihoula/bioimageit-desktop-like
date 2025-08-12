@@ -334,18 +334,18 @@ export default function Workflow() {
     },
     [rfInstance, nodes, edges, setNodes, push]
   );
-  const onNodeClick = useCallback(
-    (event: React.MouseEvent, node: Node) => {
-      // Send to backend (PyWebView)
-      if (window.pywebview && window.pywebview.api) {
-        window.pywebview.api
-          .node_selected(node, selectedPath ?? "")
-          .then((res) => console.log("Réponse backend :", res))
-          .catch((err) => console.error("Erreur d'envoi :", err));
-      }
-    },
-    [selectedPath]
-  );
+  // const onNodeClick = useCallback(
+  //   (event: React.MouseEvent, node: Node) => {
+  //     // Send to backend (PyWebView)
+  //     if (window.pywebview && window.pywebview.api) {
+  //       window.pywebview.api
+  //         .node_selected(node, selectedPath ?? "")
+  //         .then((res) => console.log("Réponse backend :", res))
+  //         .catch((err) => console.error("Erreur d'envoi :", err));
+  //     }
+  //   },
+  //   [selectedPath]
+  // );
   return (
     <div
       ref={wrapperRef}
@@ -360,7 +360,7 @@ export default function Workflow() {
         nodeTypes={nodeTypes}
         onInit={onInit}
         onNodesChange={onNodesChange}
-        onNodeClick={onNodeClick}
+        // onNodeClick={onNodeClick}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeDragStart={() => setCtx(null)}
