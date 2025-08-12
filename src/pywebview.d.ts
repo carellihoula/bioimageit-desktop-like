@@ -69,6 +69,7 @@ declare global {
     pywebview?: {
       api: PywebviewApiBridge;
     };
+    updateProgress: (percent: number) => void;
   }
 }
 

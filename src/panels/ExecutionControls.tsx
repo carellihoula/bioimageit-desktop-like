@@ -1,6 +1,7 @@
 import { Check, Play, PlayCircle, Trash2 } from "lucide-react";
 import { LargeIconButton } from "../components/custom-ui/LargeIconButton";
 import { useReactFlow } from "@xyflow/react";
+// import { useEffect, useState } from "react";
 
 export function ExecutionControls() {
   const { toObject } = useReactFlow();
@@ -21,6 +22,15 @@ export function ExecutionControls() {
       alert("Error during workflow execution.");
     }
   };
+  // const [progress, setProgress] = useState(0);
+
+  // // Exposes the global function that Python can call via evaluate_js
+  // useEffect(() => {
+  //   window.updateProgress = (percent) => {
+  //     setProgress(percent);
+  //   };
+  // }, []);
+
   return (
     <div className="flex flex-col items-center p-4 overflow-auto h-full">
       <LargeIconButton
@@ -44,6 +54,24 @@ export function ExecutionControls() {
         icon={<Check size={16} />}
         onClick={() => console.log("Clicked Create Tool")}
       />
+      {/* <div
+        style={{
+          width: "100%",
+          background: "#eee",
+          borderRadius: 4,
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            height: 20,
+            width: `${progress}%`,
+            background: "#4caf50",
+            transition: "width 0.3s ease",
+          }}
+        />
+        <p style={{ textAlign: "center" }}>{progress}%</p>
+      </div> */}
     </div>
   );
 }
