@@ -141,9 +141,22 @@ export default function Workflow() {
   // onNodesChange = just update state
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
+      const removedNodeIds = changes
+        .filter((change) => change.type === "remove")
+        .map((change) => change.id);
+
+      if (removedNodeIds.length > 0) {
+        setEdges((eds) =>
+          eds.filter(
+            (edge) =>
+              !removedNodeIds.includes(edge.source) &&
+              !removedNodeIds.includes(edge.target)
+          )
+        );
+      }
       onRFNodesChange(changes);
     },
-    [onRFNodesChange]
+    [onRFNodesChange, setEdges]
   );
 
   // onEdgesChange = just update state
@@ -179,9 +192,13 @@ export default function Workflow() {
   // menu actions
   const deleteNode = useCallback(() => {
     if (!ctx) return;
+    const nodeId = ctx.node.id;
     setNodes((nds) => nds.filter((n) => n.id !== ctx.node.id));
+    setEdges((eds) =>
+      eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+    );
     setCtx(null);
-  }, [ctx, setNodes]);
+  }, [ctx, setNodes, setEdges]);
 
   const duplicateNode = useCallback(() => {
     if (!ctx) return;
