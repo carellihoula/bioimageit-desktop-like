@@ -1,16 +1,19 @@
 import { Check, Play, PlayCircle, Trash2 } from "lucide-react";
 import { LargeIconButton } from "../components/custom-ui/LargeIconButton";
 import { useReactFlow } from "@xyflow/react";
+import { useWorkflowStore } from "@/store/useWorkflowStore";
 // import { useEffect, useState } from "react";
 
 export function ExecutionControls() {
   const { toObject } = useReactFlow();
+  const selectedPath = useWorkflowStore((state) => state.selectedPath);
   const handleExecute = async () => {
     try {
       const flow = toObject();
       // Calling the Python API via pywebview
       const result = await window.pywebview?.api.run_workflow(
-        JSON.stringify(flow)
+        JSON.stringify(flow),
+        selectedPath || ""
       );
       // result is typically a JSON string, to be parsed if needed
       const parsedResult = result ? JSON.parse(result) : null;

@@ -58,7 +58,7 @@ interface PywebviewApiBridge {
   getHomePath: () => Promise<string>;
   getWorkflowTools: (path: string) => Promise<WorkflowToolInfo[]>;
   node_selected: (node: Node, workflow_path: string) => Promise<void>;
-  run_workflow: (graphJson: string) => Promise<string>;
+  run_workflow: (graphJson: string, workflowPath: string) => Promise<string>;
   getImagesFolderPath: () => Promise<GetImagesFolderPathResult>;
 }
 
