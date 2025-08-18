@@ -12,13 +12,24 @@ import { useOpenFolder } from "@/hooks/workflow-ui/useOpenFolder";
 interface RenderFieldProps {
   prop: NodeProperty;
   onChange: (value: any) => void;
+  isSource: boolean;
+  inputModes: Record<string, "Constant" | "Column">;
+  setInputModes: React.Dispatch<
+    React.SetStateAction<{ [key: string]: "Constant" | "Column" }>
+  >;
 }
 /**
  * Renders a field based on the NodeProperty type.
  * Handles different input types like numbers, booleans, strings, and paths.
  */
-export function RenderField({ prop, onChange }: RenderFieldProps) {
-  const { handleOpenFolder, path } = useOpenFolder();
+export function RenderField({
+  prop,
+  onChange,
+  isSource,
+  inputModes,
+  setInputModes,
+}: RenderFieldProps) {
+  const { handleOpenFolder } = useOpenFolder();
   const render = () => {
     switch (prop.type) {
       case "int":
@@ -67,13 +78,31 @@ export function RenderField({ prop, onChange }: RenderFieldProps) {
             onChange={(e) => onChange(e.target.value)}
           />
         );
-      case "Path":
+      case "Path": {
+        const currentMode =
+          inputModes[prop.name] ??
+          (prop.autoColumn && !isSource ? "Column" : "Constant");
+
+        if (prop.autoColumn && !isSource && currentMode === "Column") {
+          // Column mode: fixed field with "path"
+          return (
+            <Input
+              type="text"
+              size="xs"
+              value="path"
+              style={{ textAlign: "center" }}
+              readOnly
+              borderColor="dvSeparatorBorder"
+            />
+          );
+        }
+
         return (
           <Flex align="center" gap={2} w="full">
             <Input
               type="text"
               color={"dvForeground"}
-              value={String(prop.autoColumn ? path : prop.default) ?? ""}
+              value={String(prop.value ?? prop.default ?? "")}
               borderColor="dvSeparatorBorder"
               placeholder="Path to file"
               flex="1"
@@ -101,6 +130,7 @@ export function RenderField({ prop, onChange }: RenderFieldProps) {
             </Button>
           </Flex>
         );
+      }
       default:
         return <span>Unsupported type: {prop.type}</span>;
     }

@@ -215,6 +215,9 @@ const bodyReturn = (
                   onChange={(value) =>
                     handleFieldChange(input.name, value, false)
                   }
+                  isSource={isSource}
+                  inputModes={inputModes}
+                  setInputModes={setInputModes}
                 />
               </div>
             );
