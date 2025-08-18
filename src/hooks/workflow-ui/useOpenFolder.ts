@@ -3,14 +3,14 @@ import { useState } from "react";
 export const useOpenFolder = () => {
   const [path, setPath] = useState<string | null>(null);
 
-  const handleOpenFolder = async (): Promise<string | null> => {
+  const handleOpenFolder = async (mode: string): Promise<string | null> => {
     if (
       window.pywebview &&
       window.pywebview.api &&
       typeof window.pywebview.api.openWorkflowFromSelectedFolder === "function"
     ) {
       try {
-        const result = await window.pywebview.api.getImagesFolderPath();
+        const result = await window.pywebview.api.getImagesFolderPath(mode);
 
         if (result.success && result.path) {
           // setCurrentWorkflowPath(result.path);

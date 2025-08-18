@@ -90,6 +90,7 @@ export function RenderField({
               type="text"
               size="xs"
               value="path"
+              // disabled
               style={{ textAlign: "center" }}
               readOnly
               borderColor="dvSeparatorBorder"
@@ -120,13 +121,32 @@ export function RenderField({
                 bg: "dvHoverBg",
               }}
               onClick={async () => {
-                const selectedPath = await handleOpenFolder();
+                const selectedPath = await handleOpenFolder("folder");
                 if (selectedPath) {
                   onChange(selectedPath); //
                 }
               }}
             >
-              Browse...
+              Select Folder
+            </Button>
+            <Button
+              borderColor="dvSeparatorBorder"
+              as="label"
+              size="xs"
+              cursor="pointer"
+              variant="outline"
+              color={"dvForeground"}
+              _hover={{
+                bg: "dvHoverBg",
+              }}
+              onClick={async () => {
+                const selectedPath = await handleOpenFolder("file");
+                if (selectedPath) {
+                  onChange(selectedPath); //
+                }
+              }}
+            >
+              Select File
             </Button>
           </Flex>
         );

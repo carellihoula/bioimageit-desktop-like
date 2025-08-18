@@ -59,7 +59,7 @@ interface PywebviewApiBridge {
   getWorkflowTools: (path: string) => Promise<WorkflowToolInfo[]>;
   node_selected: (node: Node, workflow_path: string) => Promise<void>;
   run_workflow: (graphJson: string, workflowPath: string) => Promise<string>;
-  getImagesFolderPath: () => Promise<GetImagesFolderPathResult>;
+  getImagesFolderPath: (mode: string) => Promise<GetImagesFolderPathResult>;
 }
 
 // Declare the Window global interface extension
