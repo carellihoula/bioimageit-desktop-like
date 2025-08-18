@@ -61,6 +61,30 @@ export function Properties() {
     setNodes(updatedNodes);
   };
 
+  // Update input mode (Constant / Column) by modifying autoColumn
+  const handleModeChange = (
+    inputName: string,
+    newMode: "Constant" | "Column"
+  ) => {
+    const updatedNodes = getNodes().map((node) => {
+      if (!node.selected) return node;
+      const tool = node.data.tool as ToolInfo;
+      const updatedTool: ToolInfo = {
+        ...tool,
+        inputs: tool.inputs?.map((field) =>
+          field.name === inputName
+            ? { ...field, autoColumn: newMode === "Column" }
+            : field
+        ),
+      };
+      return { ...node, data: { ...node.data, tool: updatedTool } };
+    });
+
+    setNodes(updatedNodes);
+
+    setInputModes((prev) => ({ ...prev, [inputName]: newMode }));
+  };
+
   // const handleResetAllFields = () => {
   //   const updatedNodes = getNodes().map((node) => {
   //     if (!node.selected) return node;
@@ -111,7 +135,8 @@ export function Properties() {
                       isSource,
                       handleFieldChange,
                       inputModes,
-                      setInputModes
+                      setInputModes,
+                      handleModeChange
                       // handleResetField
                     ).map((item, index) => (
                       <Accordion.Item
@@ -165,7 +190,8 @@ const bodyReturn = (
   inputModes: Record<string, "Constant" | "Column">,
   setInputModes: React.Dispatch<
     React.SetStateAction<{ [key: string]: "Constant" | "Column" }>
-  >
+  >,
+  handleModeChange: (inputName: string, newMode: "Constant" | "Column") => void
   // handleResetField: Function
 ) => {
   const items = createListCollection({
@@ -187,12 +213,12 @@ const bodyReturn = (
             const currentMode =
               inputModes[input.name] ??
               (input.autoColumn ? "Column" : "Constant");
-            const handleModeChange = (newMode: "Constant" | "Column") => {
-              setInputModes((prev) => ({
-                ...prev,
-                [input.name]: newMode,
-              }));
-            };
+            // const handleModeChange = (newMode: "Constant" | "Column") => {
+            //   setInputModes((prev) => ({
+            //     ...prev,
+            //     [input.name]: newMode,
+            //   }));
+            // };
             return (
               <div key={index} className="mb-3 flex gap-2 items-center">
                 <label className="text-sm">{input.name}</label>
@@ -201,7 +227,10 @@ const bodyReturn = (
                     data={items}
                     value={currentMode}
                     onChange={(newVal) =>
-                      handleModeChange(newVal as "Constant" | "Column")
+                      handleModeChange(
+                        input.name,
+                        newVal as "Constant" | "Column"
+                      )
                     }
                   />
                 )}
