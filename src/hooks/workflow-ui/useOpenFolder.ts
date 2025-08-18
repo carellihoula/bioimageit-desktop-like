@@ -13,7 +13,6 @@ export const useOpenFolder = () => {
         const result = await window.pywebview.api.getImagesFolderPath(mode);
 
         if (result.success && result.path) {
-          // setCurrentWorkflowPath(result.path);
           setPath(result?.path);
           return result.path;
         } else if (result.error) {
