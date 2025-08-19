@@ -173,6 +173,7 @@ export default function Workflow() {
           )
         );
       }
+      if (!isLoaded) return;
       onRFNodesChange(changes);
     },
     [onRFNodesChange, setEdges]
