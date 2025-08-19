@@ -38,6 +38,8 @@ import { useSocket } from "@/context/SocketContext";
 import { useValidConnection } from "@/hooks/workflow-ui/useValidConnection";
 import { CustomConnectionLine } from "@/components/Workflow-ui/CustomConnectionLine";
 import { getProjectPath } from "@/api/workflow/workflowApi";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { toaster } from "@/components/ui/toaster";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -53,6 +55,8 @@ export default function Workflow() {
   const selectedPath = useWorkflowStore((state) => state.selectedPath);
   const pendingMessage = useRef<string | null>(null);
   const { sendMessage, withPermission, setWithPermission } = useSocket();
+  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // ReactFlow state
   const [nodes, setNodes, onRFNodesChange] = useNodesState<Node>([]);
@@ -68,6 +72,14 @@ export default function Workflow() {
     new Set()
   );
 
+  const showToaster = () => {
+    toaster.create({
+      description: "Unable to load the selected workflow.",
+      type: "error",
+      duration: 3000,
+    });
+  };
+
   // Load workflow when selectedPath changes
   useEffect(() => {
     if (!selectedPath || !rfInstance) return;
@@ -80,7 +92,9 @@ export default function Workflow() {
 
         if (!flow || !flow.success) {
           // console.error("Loading failed:", flow?.error);
-          init([], []);
+          // init([], []);
+          showToaster();
+          setIsLoaded(true);
           return;
         }
         const toolPaths = await window.pywebview?.api.getWorkflowTools(
@@ -94,9 +108,11 @@ export default function Workflow() {
         rfInstance?.setEdges(data?.edges ?? []);
         rfInstance?.setViewport(data?.viewport ?? { x: 0, y: 0, zoom: 1 });
         init(data?.nodes ?? [], data?.edges ?? []);
+        setIsLoaded(true);
       } catch (err) {
         console.error("JS error in loadWorkflow", err);
         init([], []);
+        setIsLoaded(true);
       }
     }
 
@@ -105,7 +121,7 @@ export default function Workflow() {
 
   // Save flow on nodes or edges change
   useEffect(() => {
-    if (!rfInstance || !selectedPath) return;
+    if (!rfInstance || !selectedPath || !isLoaded) return;
 
     async function save() {
       try {
@@ -116,8 +132,11 @@ export default function Workflow() {
       }
     }
 
-    save();
-  }, [nodes, edges, rfInstance, selectedPath]);
+    // save();
+    // Debouncing to prevent multiple backups
+    const timeoutId = setTimeout(save, 300);
+    return () => clearTimeout(timeoutId);
+  }, [nodes, edges, rfInstance, selectedPath, isLoaded]);
 
   // init flow history
   const onInit = useCallback((instance: ReactFlowInstance) => {
@@ -401,6 +420,25 @@ export default function Workflow() {
           items={contextMenu}
           onAction={handleAction}
         />
+      )}
+      {!isLoaded && (
+        <Flex
+          position="absolute"
+          top={0}
+          left={0}
+          w="100%"
+          h="100%"
+          bg="rgba(59, 57, 57, 0.34)"
+          align="center"
+          justify="center"
+          direction="column"
+          zIndex={10}
+        >
+          <Spinner size="xl" color="blue.400" borderWidth="2px" />
+          <Text mt={3} fontSize="sm" color="white">
+            Loading workflow...
+          </Text>
+        </Flex>
       )}
     </div>
   );

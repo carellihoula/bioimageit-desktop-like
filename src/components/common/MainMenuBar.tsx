@@ -28,8 +28,8 @@ export const MainMenuBar = ({
 
   const showToaster = () => {
     toaster.create({
-      description: "File saved successfully",
-      type: "info",
+      description: "Backup is automatic. File saved successfully",
+      type: "success",
       duration: 3000,
     });
   };
