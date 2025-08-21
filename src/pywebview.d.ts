@@ -5,6 +5,7 @@
  */
 
 import { Edge, Node } from "@xyflow/react";
+import { NodeData } from "./types";
 
 interface WorkflowToolInfo {
   module_path: string; // ex: "/Tools/foo/bar.py"
@@ -40,6 +41,10 @@ interface GetImagesFolderPathResult {
   path?: string;
   error?: string;
 }
+interface NodeResults {
+  status: string;
+  payload: NodeData;
+}
 
 interface PywebviewApiBridge {
   // method_name: (param1: type, param2: type) => Promise<return_type>;
@@ -57,7 +62,7 @@ interface PywebviewApiBridge {
   getStatus: () => Promise<string>;
   getHomePath: () => Promise<string>;
   getWorkflowTools: (path: string) => Promise<WorkflowToolInfo[]>;
-  node_selected: (node: Node, workflow_path: string) => Promise<void>;
+  node_selected: (node: Node, workflow_path: string) => Promise<NodeResults>;
   run_workflow: (graphJson: string, workflowPath: string) => Promise<string>;
   getImagesFolderPath: (mode: string) => Promise<GetImagesFolderPathResult>;
 }

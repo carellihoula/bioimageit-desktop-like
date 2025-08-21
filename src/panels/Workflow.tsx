@@ -40,6 +40,7 @@ import { CustomConnectionLine } from "@/components/Workflow-ui/CustomConnectionL
 import { getProjectPath } from "@/api/workflow/workflowApi";
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
+import { NodeResultsStore } from "@/store/NodeResultsStore";
 
 export default function Workflow() {
   const nodeTypes = useMemo(
@@ -370,18 +371,23 @@ export default function Workflow() {
     },
     [rfInstance, nodes, edges, setNodes, push]
   );
-  const onNodeClick = useCallback(
-    (_: React.MouseEvent, node: Node) => {
-      // Send to backend (PyWebView)
-      if (window.pywebview && window.pywebview.api) {
-        window.pywebview.api
-          .node_selected(node, selectedPath ?? "")
-          .then((res) => console.log("Réponse backend :", res))
-          .catch((err) => console.error("Erreur d'envoi :", err));
-      }
-    },
-    [selectedPath]
-  );
+  // const onNodeClick = useCallback(
+  //   (_: React.MouseEvent, node: Node) => {
+  //     // Send to backend (PyWebView)
+  //     if (window.pywebview && window.pywebview.api) {
+  //       window.pywebview.api
+  //         .node_selected(node, selectedPath ?? "")
+  //         .then((res) => {
+  //           if (res.status === "ok" && res.payload?.results) {
+  //             NodeResultsStore.getState().setNodeResults(res.payload);
+  //           }
+  //           console.log("Réponse backend :", res);
+  //         })
+  //         .catch((err) => console.error("Erreur d'envoi :", err));
+  //     }
+  //   },
+  //   [selectedPath]
+  // );
   return (
     <div
       ref={wrapperRef}
@@ -396,7 +402,7 @@ export default function Workflow() {
         nodeTypes={nodeTypes}
         onInit={onInit}
         onNodesChange={onNodesChange}
-        onNodeClick={onNodeClick}
+        // onNodeClick={onNodeClick}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeDragStart={() => setCtx(null)}
